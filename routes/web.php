@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FamilyController;
@@ -51,4 +52,7 @@ Route::middleware('auth:admin')->group(function () {
 
     Route::get('/family/table', [FamilyController::class, 'table'])->name('family.table');
     Route::resource('family', FamilyController::class);
+
+    Route::get('/announcement/table', [AnnouncementController::class, 'table'])->name('announcement.table');
+    Route::resource('announcement', AnnouncementController::class);
 });
