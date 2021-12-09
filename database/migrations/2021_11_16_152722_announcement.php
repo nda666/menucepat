@@ -17,8 +17,9 @@ class Announcement extends Migration
             $table->id();
             $table->string('title');
             $table->text('description');
-            $table->date('start_date');
-            $table->date('end_date');
+            $table->timestamp('start_date');
+            $table->timestamp('end_date');
+            $table->text('attachment')->nullable();
             $table->timestamps();
         });
     }

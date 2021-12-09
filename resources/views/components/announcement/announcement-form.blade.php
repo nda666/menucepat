@@ -18,7 +18,7 @@
                 <div class="modal-body">
                     {{ csrf_field() }}
                     <input type="hidden" name="id" autocomplete="off">
-                    <x-adminlte-input id="dateRange" name="date" required autocomplete="off"
+                    <x-adminlte-input id="dateRange" required name="date" autocomplete="off"
                         placeholder="Tanggal Mulai - Tanggal Selesai" label="Tanggal Mulai - Tanggal Selesai" />
                     <x-adminlte-input name="title" label="Judul" required autocomplete="off" placeholder="Judul" />
                     <x-adminlte-textarea name="description" label="Deskripsi" required autocomplete="off"
@@ -83,9 +83,14 @@
                 $(`#formCreateAnnouncement .is-invalid`).removeClass('is-invalid');
                 const data = $(this).serializeArray();
                 const id = $('#formCreateAnnouncement [name="id"]').val();
-                var form = new FormData($(this)[0]);
+                const form = new FormData($(this)[0]);
                 id && form.append('_method', 'PUT');
-
+                let date = $('#dateRange').val();
+                const separateDate = date.split(' - ');
+                // form.remove('date');
+                console.log(form)
+                form.append('start_date', separateDate[0]);
+                form.append('end_date', separateDate[1]);
                 $.ajax({
                     url: id ? "{{ url('announcement/') }}/" + id :
                         "{{ route('announcement.store') }}", // if id exist use update URL
@@ -98,8 +103,8 @@
                         @if ($gridId)
                             window['{{ $gridId }}'].ajax.reload(null, false);
                         @endif
-                        $('#modalCreateAnnouncement input, #modalCreateAnnouncement textarea').val(
-                            '').trigger('change');
+                        $('#modalCreateAnnouncement input, #modalCreateAnnouncement textarea')
+                            .val('').trigger('change');
                         $('#modalCreateAnnouncement select').val('').trigger('change');
                         $('input[name="_token"]').val('{{ csrf_token() }}');
 
