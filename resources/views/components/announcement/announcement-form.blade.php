@@ -99,9 +99,7 @@
                             window['{{ $gridId }}'].ajax.reload(null, false);
                         @endif
                         $('#modalCreateAnnouncement input, #modalCreateAnnouncement textarea').val(
-                                '')
-                            .trigger(
-                                'change');
+                            '').trigger('change');
                         $('#modalCreateAnnouncement select').val('').trigger('change');
                         $('input[name="_token"]').val('{{ csrf_token() }}');
 
