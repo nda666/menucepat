@@ -1,0 +1,6 @@
+.env
+.history
+.vscode
+.well-known
+cgi-bin
+error_log
