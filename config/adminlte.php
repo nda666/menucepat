@@ -385,6 +385,31 @@ return [
                 ],
             ],
         ],
+        'Moment' => [
+            'active' => false,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'vendor/moment/moment.min.js',
+                ],
+            ],
+        ],
+        'DateRangePicker' => [
+            'active' => false,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'vendor/daterangepicker/daterangepicker.js',
+                ],
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => 'vendor/daterangepicker/daterangepicker.css',
+                ],
+            ],
+        ],
         'GridJs' => [
             'active' => false,
             'files' => [
