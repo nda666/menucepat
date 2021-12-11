@@ -5,3 +5,4 @@
 cgi-bin
 error_log
 node_modules
+.htaccess
