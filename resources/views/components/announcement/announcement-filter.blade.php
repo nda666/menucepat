@@ -1,7 +1,7 @@
 <form id="announcementSearchForm">
     <div class="row">
-        <x-adminlte-input id="filterNama" name="filterNama" type="text" label="Nama" autocomplete="off"
-            placeholder="Cari dari Nama" fgroup-class="col-md-6" />
+        <x-adminlte-input id="filterTitle" name="filterTitle" type="text" label="Title" autocomplete="off"
+            placeholder="Cari dari Title" fgroup-class="col-md-6" />
 
 
     </div>
