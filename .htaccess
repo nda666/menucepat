@@ -1,5 +1,4 @@
 RewriteEngine On
-RewriteRule .* - [E=Cache-Control:no-cache]
 
 RewriteCond %{REQUEST_FILENAME} -d [OR]
 RewriteCond %{REQUEST_FILENAME} -f
