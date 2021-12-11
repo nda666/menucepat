@@ -268,6 +268,13 @@ return [
             // 'label'       => 4,
             'label_color' => 'success',
         ],
+        [
+            'text'        => 'Pengumuman',
+            'url'         => 'announcement',
+            'icon'        => 'fas fa-fw fa-bullhorn',
+            // 'label'       => 4,
+            'label_color' => 'success',
+        ],
         // [
         //     'text'    => 'multilevel',
         //     'icon'    => 'fas fa-fw fa-share',

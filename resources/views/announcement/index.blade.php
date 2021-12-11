@@ -59,7 +59,7 @@
                 const dropdownMenu = $(this).closest('.dropdown-menu');
                 const tr = $($(dropdownMenu).data('target')).closest('tr');
                 const data = window.grid.row(tr).data();
-                $("#modalCreateAnnouncement :input").each(function(index, input) {
+                $("#modalCreateAnnouncement :input").not('[type=file]').each(function(index, input) {
                     if (input.name === 'user_id') {
                         var newOption = new Option(data.user_nama, data.user_id, false, false);
                         $('#select-user_id').append(newOption).trigger('change');
@@ -67,6 +67,18 @@
                         input.name !== '_token' && $(`#formCreateAnnouncement [name="${input?.name}"]`)
                             .val(
                                 data[`${input?.name}`]).trigger('change');
+                    }
+                });
+                const startDate = moment(data.start_date).format('YYYY-MM-DD HH:mm');
+                const endDate = moment(data.end_date).format('YYYY-MM-DD HH:mm');
+                $('#dateRange').daterangepicker({
+                    startDate,
+                    endDate,
+                    timePicker: true,
+                    timePicker24Hour: true,
+                    drops: 'top',
+                    locale: {
+                        format: 'YYYY-MM-DD HH:mm'
                     }
                 });
                 $('input[name="_token"]').val('{{ csrf_token() }}');
