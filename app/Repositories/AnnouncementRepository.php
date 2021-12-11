@@ -44,8 +44,15 @@ class AnnouncementRepository extends BaseRepository
         $announcement->start_date = $request->post('start_date');
         $announcement->end_date = $request->post('end_date');
 
-        $attachment = $request->file('attachment')->store('public/attachments');
-        $announcement->attachment = Storage::url($attachment);
+        if ($request->file('attachment')) {
+            $attachment = $request->file('attachment')->store('public/attachments');
+
+            if ($announcement->attachment && Storage::exists($announcement->attachment)) {
+                Storage::delete($announcement->attachment);
+            }
+
+            $announcement->attachment = Storage::url($attachment);
+        }
 
         $announcement->save();
 
@@ -59,22 +66,21 @@ class AnnouncementRepository extends BaseRepository
      */
     public function update(FormRequest $request)
     {
-        $announcement = new Announcement();
+        $announcement = Announcement::findOrFail($request->post('id'));
         $announcement->title = $request->post('title');
         $announcement->description = $request->post('description');
         $announcement->start_date = $request->post('start_date');
         $announcement->end_date = $request->post('end_date');
 
-        $attachment = $request->file('attachment')->store('public/attachments');
+        if ($request->file('attachment')) {
+            $attachment = $request->file('attachment')->store('public/attachments');
 
-        if ($announcement->attachment && Storage::exists($announcement->attachment)) {
-            Storage::delete($announcement->attachment);
+            if ($announcement->attachment && Storage::exists($announcement->attachment)) {
+                Storage::delete($announcement->attachment);
+            }
+
+            $announcement->attachment = Storage::url($attachment);
         }
-
-        $announcement->attachment = Storage::url($attachment);
-
-        $file = $request->file('avatar')->store('public/attachment');
-        $announcement->attachment = Storage::url($file);
 
         $announcement->save();
 

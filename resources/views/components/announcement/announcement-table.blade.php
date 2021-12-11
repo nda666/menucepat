@@ -9,10 +9,11 @@
         <tr>
             <th>Aksi</th>
             <th>ID</th>
-            <th>Nama</th>
-            <th>User</th>
-            <th>Hubungan</th>
-            <th>Tempat Lahir</th>
+            <th>Judul</th>
+            <th>Deskripsi</th>
+            <th>Tanggal Mulai</th>
+            <th>Tanggal Berakhir</th>
+            <th>Attachment</th>
         </tr>
     </thead>
     <tbody></tbody>
@@ -39,7 +40,7 @@
                 processing: true,
                 serverSide: true,
                 scrollX: true,
-                order: [1, 'asc'],
+                order: [1, 'desc'],
                 ajax: {
                     url: '{{ route('announcement.table') }}',
 
@@ -75,24 +76,32 @@
                         }
                     },
                     {
-                        name: 'families.id',
+                        name: 'announcements.id',
                         data: 'id'
                     },
                     {
-                        name: 'families.nama',
-                        data: 'nama'
+                        name: 'announcements.title',
+                        data: 'title'
                     },
                     {
-                        name: 'families.user',
-                        data: 'user_nama'
+                        name: 'announcements.description',
+                        data: 'description'
                     },
                     {
-                        name: 'families.hubungan',
-                        data: 'hubungan'
+                        name: 'announcements.start_date',
+                        data: 'start_date'
                     },
                     {
-                        name: 'families.tempat_lahir',
-                        data: 'tempat_lahir'
+                        name: 'announcements.end_date',
+                        data: 'end_date'
+                    },
+                    {
+                        name: 'announcements.attachment',
+                        data: 'attachment',
+                        sortable: false,
+                        render: function(link) {
+                            return link ? `<a href="${link}" target="_blank">Attachment</a>` : '';
+                        }
                     },
 
                 ]

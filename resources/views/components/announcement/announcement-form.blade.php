@@ -35,7 +35,7 @@
                         </div>
                     </div> --}}
 
-                    <x-adminlte-input name="attachment" type="file" label="Attachment" required autocomplete="off"
+                    <x-adminlte-input name="attachment" type="file" label="Attachment" autocomplete="off"
                         placeholder="Attachment" />
 
                 </div>
