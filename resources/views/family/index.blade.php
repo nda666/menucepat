@@ -2,34 +2,35 @@
 
 @section('title', 'Family')
 
-@section('content_header')
-    <h3>Master Family</h3>
+@section('content_top_nav_left')
+<div class="ml-3 navbar-brand" href="#"><i class="fas fa-fw fa-users "></i> Keluarga</div>
 @endsection
+
 @section('content')
-    <section class="mb-2">
-        <div class="btn-group" role="group" aria-label="...">
-            <x-family.family-form grid-id="grid" />
-            <button type="button" id="search" class="btn btn-primary" data-toggle="collapse" data-target="#filterCollapse"
-                aria-expanded="false" aria-controls="filterCollapse">Filter</button>
-        </div>
-    </section>
-    <x-family.family-view />
-    <div class="card mt-2">
-        <div class="card-body">
-            <div class="card-text">
-                <div class="row">
-                    <div class="col-12">
-                        <x-family.family-table id="grid" filter-form-id="filter-form" />
-                    </div>
+<section class="pt-3 pb-2">
+    <div class="btn-group" role="group" aria-label="...">
+        <x-family.family-form grid-id="grid" />
+        <button type="button" id="search" class="btn btn-primary" data-toggle="collapse" data-target="#filterCollapse"
+            aria-expanded="false" aria-controls="filterCollapse">Filter</button>
+    </div>
+</section>
+<x-family.family-view />
+<div class="card mt-2">
+    <div class="card-body">
+        <div class="card-text">
+            <div class="row">
+                <div class="col-12">
+                    <x-family.family-table id="grid" filter-form-id="filter-form" />
                 </div>
             </div>
         </div>
     </div>
+</div>
 @stop
 
 @section('js')
-    <script>
-        (function() {
+<script>
+    (function() {
             function getRowData(action) {
                 const dropdownMenu = $(action).closest('.dropdown-menu');
                 const tr = $($(dropdownMenu).data('target')).closest('tr');
@@ -140,7 +141,7 @@
             });
 
         })()
-    </script>
+</script>
 @endsection
 
 @section('plugins.Select2', true)

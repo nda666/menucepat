@@ -85,8 +85,8 @@ return [
 
     'layout_topnav' => null,
     'layout_boxed' => null,
-    'layout_fixed_sidebar' => null,
-    'layout_fixed_navbar' => null,
+    'layout_fixed_sidebar' => true,
+    'layout_fixed_navbar' => true,
     'layout_fixed_footer' => null,
     'layout_dark_mode' => null,
 
@@ -127,9 +127,9 @@ return [
     'classes_content_wrapper' => '',
     'classes_content_header' => '',
     'classes_content' => '',
-    'classes_sidebar' => 'sidebar-dark-primary elevation-4',
+    'classes_sidebar' => 'sidebar-dark-primary ',
     'classes_sidebar_nav' => '',
-    'classes_topnav' => 'navbar-white navbar-light',
+    'classes_topnav' => 'navbar-dark',
     'classes_topnav_nav' => 'navbar-expand',
     'classes_topnav_container' => 'container',
 
@@ -246,16 +246,16 @@ return [
             'url'  => 'admin/blog',
             'can'  => 'manage-blog',
         ],
-        ['header' => 'Master'],
+        ['header' => 'Master Data'],
         [
-            'text'        => 'User',
+            'text'        => 'Pegawai',
             'url'         => 'user',
             'icon'        => 'fas fa-fw fa-user',
             // 'label'       => 4,
             'label_color' => 'success',
         ],
         [
-            'text'        => 'Family',
+            'text'        => 'Keluarga',
             'url'         => 'family',
             'icon'        => 'fas fa-fw fa-users',
             // 'label'       => 4,
@@ -268,6 +268,16 @@ return [
             // 'label'       => 4,
             'label_color' => 'success',
         ],
+        ['header' => 'laporan'],
+        [
+            'text'        => 'Absensi Pegawai',
+            'url'         => 'report',
+            'icon'        => 'fas fa-fw fa-fingerprint',
+            // 'label'       => 4,
+            'label_color' => 'success',
+        ],
+
+        ['header' => 'Sistem Apps'],
         [
             'text'        => 'Pengumuman',
             'url'         => 'announcement',

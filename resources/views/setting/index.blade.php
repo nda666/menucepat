@@ -2,11 +2,11 @@
 
 @section('title', 'Setting')
 
-@section('content_header')
-<h3>Master Setting</h3>
+@section('content_top_nav_left')
+<div class="ml-3 navbar-brand" href="#"><i class="fas fa-fw fa-cog "></i> Setting</div>
 @endsection
 @section('content')
-<section class="mb-2">
+<section class="pt-3 pb-2">
     <div class="btn-group" role="group" aria-label="...">
         <x-setting.setting-form grid-id="grid" />
         <button type="button" id="search" class="btn btn-primary" data-toggle="collapse" data-target="#filterCollapse"

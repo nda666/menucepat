@@ -2,34 +2,35 @@
 
 @section('title', 'Location')
 
-@section('content_header')
-    <h3>Master Location</h3>
+@section('content_top_nav_left')
+<div class="ml-3 navbar-brand" href="#"><i class="fas fa-fw fa-map-marker-alt "></i> Lokasi</div>
 @endsection
+
 @section('content')
-    <section class="mb-2">
-        <div class="btn-group" role="group" aria-label="...">
-            <x-location.location-form grid-id="grid" />
-            <button type="button" id="search" class="btn btn-primary" data-toggle="collapse" data-target="#filterCollapse"
-                aria-expanded="false" aria-controls="filterCollapse">Filter</button>
-        </div>
-    </section>
-    <x-location.location-view />
-    <div class="card mt-2">
-        <div class="card-body">
-            <div class="card-text">
-                <div class="row">
-                    <div class="col-12">
-                        <x-location.location-table id="grid" filter-form-id="filter-form" />
-                    </div>
+<section class="pt-3 pb-2">
+    <div class="btn-group" role="group" aria-label="...">
+        <x-location.location-form grid-id="grid" />
+        <button type="button" id="search" class="btn btn-primary" data-toggle="collapse" data-target="#filterCollapse"
+            aria-expanded="false" aria-controls="filterCollapse">Filter</button>
+    </div>
+</section>
+<x-location.location-view />
+<div class="card mt-2">
+    <div class="card-body">
+        <div class="card-text">
+            <div class="row">
+                <div class="col-12">
+                    <x-location.location-table id="grid" filter-form-id="filter-form" />
                 </div>
             </div>
         </div>
     </div>
+</div>
 @stop
 
 @section('js')
-    <script>
-        (function() {
+<script>
+    (function() {
             function getRowData(action) {
                 const dropdownMenu = $(action).closest('.dropdown-menu');
                 const tr = $($(dropdownMenu).data('target')).closest('tr');
@@ -145,7 +146,7 @@
             });
 
         })()
-    </script>
+</script>
 @endsection
 
 @section('plugins.Datatables', true)
