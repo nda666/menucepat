@@ -63,7 +63,7 @@
                                     </a>
 
                                     <div  class="dropdown-menu" data-target="#dropdownMenuLink${val}" id="dropdown-menu-${val}" style="position: fixed" aria-labelledby="dropdownMenuLink${val}">
-                                        <h6 class="dropdown-header">${row.nama}</h6>
+                                        <h6 class="dropdown-header">${row.key}</h6>
                                         <div class="dropdown-divider"></div>
                                         <a class="dropdown-item view-action" href="#lihat">Lihat</a>
                                         <a class="dropdown-item edit-action" href="#edit">Ubah</a>

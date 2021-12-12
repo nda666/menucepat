@@ -1,4 +1,4 @@
-<div id="filterCollapse" class="collapse show">
+<div id="filterCollapse" class="collapse">
     <h5>Filter Pencarian</h5>
 
 
@@ -28,17 +28,16 @@
 </table>
 
 @push('css')
-    <style>
-        #<?="$id "?>th,
-        #<?="$id "?>td {
-            white-space: nowrap;
-        }
-
-    </style>
+<style>
+    #<?="$id "?>th,
+    #<?="$id "?>td {
+        white-space: nowrap;
+    }
+</style>
 @endpush
 @push('js')
-    <script>
-        (function() {
+<script>
+    (function() {
             function refreshTable() {
                 window['{{ $id }}'].ajax.reload();
             }
@@ -155,5 +154,5 @@
             });
 
         })()
-    </script>
+</script>
 @endpush

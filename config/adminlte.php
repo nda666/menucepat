@@ -383,12 +383,7 @@ return [
     */
 
     'plugins' => [
-        'AdminJs' => [
-            'active' => true,
-            'files' => [
-                ['type' => 'js', 'asset' => 'true', 'location' => 'js/admin.js']
-            ]
-        ],
+
         'BootBox' => [
             'active' => false,
             'files' => [
@@ -554,6 +549,12 @@ return [
                     'location' => '//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js',
                 ],
             ],
+        ],
+        'AdminJs' => [
+            'active' => true,
+            'files' => [
+                ['type' => 'js', 'asset' => 'true', 'location' => 'js/admin.js']
+            ]
         ],
     ],
 

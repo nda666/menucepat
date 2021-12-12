@@ -26,4 +26,8 @@
     $(e.target).append($(dropdownMenu).detach());
     dropdownMenu = null;
   });
+
+  $.extend(true, $.fn.dataTable.defaults, {
+    searching: false,
+  });
 })();

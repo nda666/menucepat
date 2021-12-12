@@ -30,6 +30,14 @@
 </div>
 @stop
 
+@section('plugins.DatePicker', true)
+@section('plugins.Select2', true)
+@section('plugins.Datatables', true)
+@section('plugins.Moment', true)
+@section('plugins.DateRangePicker', true)
+@section('plugins.BootBox', true)
+@section('plugins.Toastr', true)
+
 @section('js')
 <script>
     (function() {
@@ -158,11 +166,3 @@
         })()
 </script>
 @endsection
-
-
-@section('plugins.Select2', true)
-@section('plugins.Datatables', true)
-@section('plugins.Moment', true)
-@section('plugins.DateRangePicker', true)
-@section('plugins.BootBox', true)
-@section('plugins.Toastr', true)
