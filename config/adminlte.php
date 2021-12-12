@@ -275,6 +275,13 @@ return [
             // 'label'       => 4,
             'label_color' => 'success',
         ],
+        [
+            'text'        => 'Pengaturan',
+            'url'         => 'setting',
+            'icon'        => 'fas fa-fw fa-cog',
+            // 'label'       => 4,
+            'label_color' => 'success',
+        ],
         // [
         //     'text'    => 'multilevel',
         //     'icon'    => 'fas fa-fw fa-share',
