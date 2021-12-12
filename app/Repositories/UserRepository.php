@@ -123,16 +123,24 @@ class UserRepository extends BaseRepository
     {
 
         $user = $formRequest->user();
-        $avatar = $formRequest->file('avatar')->store('public/avatars');
+        if ($formRequest->file('avatar')) {
+            $avatar = $formRequest->file('avatar')->store('public/avatars');
 
-        if ($user->avatar && Storage::exists($user->avatar)) {
-            Storage::delete($user->avatar);
+            if ($user->avatar && Storage::exists($user->avatar)) {
+                Storage::delete($user->avatar);
+            }
+            $user->avatar = Storage::url($avatar);
         }
 
-        $user->avatar = Storage::url($avatar);
-        $user->alamat = $formRequest->post('alamat');
-        $user->whatsapp = $formRequest->post('whatsapp');
-
+        if ($formRequest->post('nama')) {
+            $user->nama = $formRequest->post('nama');
+        }
+        if ($formRequest->post('alamat')) {
+            $user->alamat = $formRequest->post('alamat');
+        }
+        if ($formRequest->post('whatsapp')) {
+            $user->whatsapp = $formRequest->post('whatsapp');
+        }
         $user->save();
 
         return $user;
