@@ -47,8 +47,9 @@ class AttendanceRepository extends BaseRepository
         $attendance->type = $request->post('type');
 
         if ($request->file('image')) {
-            $image = $request->file('image')->store('/attendance');
-            $attendance->image = Storage::url($image);
+            $request->file('image')->storeAs('attendance/', $request->file('image')->hashName(), ['disk' => 'attendance']);
+
+            $attendance->image = 'private/attendance/' . $request->file('image')->hashName();
         }
 
         $attendance->save();
@@ -72,8 +73,9 @@ class AttendanceRepository extends BaseRepository
         $attendance->type = $request->post('type');
 
         if ($request->file('image')) {
-            $image = $request->file('image')->storeAs('attendance/', $request->file('image')->hashName(), ['disk' => 'attendance']);
-            $attendance->image = Storage::url($image);
+            $request->file('image')->storeAs('attendance/', $request->file('image')->hashName(), ['disk' => 'attendance']);
+
+            $attendance->image = 'private/attendance/' . $request->file('image')->hashName();
         }
 
         $attendance->save();
