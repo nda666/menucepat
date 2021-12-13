@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AttendanceController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\LocationController;
 use App\Http\Controllers\Api\PasswordController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Resources\Api\UserResource;
@@ -37,8 +38,11 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('/password', [ProfileController::class, 'password'])->name('api.password');
 
     Route::post('/clock-in', [AttendanceController::class, 'clockIn'])->name('api.clockIn');
-    Route::post('/clockout', [ProfileController::class, 'clockOut'])->name('api.clockOut');
-    Route::get('/current-attendance', [ProfileController::class, 'currentAttendance'])->name('api.currentAttendance');
+    Route::post('/clock-out', [AttendanceController::class, 'clockOut'])->name('api.clockOut');
+    Route::get('/current-attendance', [AttendanceController::class, 'currentAttendance'])->name('api.currentAttendance');
+    Route::get('/attendance/image', [AttendanceController::class, 'attendanceImage'])->name('api.attendanceImage');
+
+    Route::get('location', [LocationController::class, 'index'])->name('api.location');
 });
 
 

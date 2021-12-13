@@ -7,9 +7,10 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
+use Storage;
 use Yajra\DataTables\Facades\DataTables;
 
-class AttendaceRepository extends BaseRepository
+class AttendanceRepository extends BaseRepository
 {
     public function __construct(Attendance $model)
     {
@@ -34,29 +35,50 @@ class AttendaceRepository extends BaseRepository
     public function clockIn(FormRequest $request)
     {
         $attendance = new Attendance();
-
-        if ($request->post('clock_in')) {
-            $attendance->clock_in = Carbon::now();
-        }
-
+        $attendance->clock_in = Carbon::now();
+        $attendance->clock_out = null;
         $attendance->user_id = auth()->user()->id;
         $attendance->latitude = $request->post('latitude');
         $attendance->longtitude = $request->post('longtitude');
         $attendance->location_id = !$request->post('type') ? null : $request->post('location_id');
         $attendance->location_name = $request->post('location_name');
-        $attendance->image = $request->post('image');
         $attendance->description = $request->post('description');
         $attendance->reason = $request->post('reason');
         $attendance->type = $request->post('type');
-        $attendance->save();
 
-        return $attendance;
+        if ($request->file('image')) {
+            $image = $request->file('image')->store('/attendance');
+            $attendance->image = Storage::url($image);
+        }
+
+        $attendance->save();
+        $attendance->refresh();
+
+        return $attendance->get;
     }
 
-    public function clockOut($attendance)
+    public function clockOut(FormRequest $request)
     {
+        $attendance = new Attendance();
+        $attendance->clock_in = null;
         $attendance->clock_out = Carbon::now();
+        $attendance->user_id = auth()->user()->id;
+        $attendance->latitude = $request->post('latitude');
+        $attendance->longtitude = $request->post('longtitude');
+        $attendance->location_id = !$request->post('type') ? null : $request->post('location_id');
+        $attendance->location_name = $request->post('location_name');
+        $attendance->description = $request->post('description');
+        $attendance->reason = $request->post('reason');
+        $attendance->type = $request->post('type');
+
+        if ($request->file('image')) {
+            $image = $request->file('image')->storeAs('attendance/', $request->file('image')->hashName(), ['disk' => 'attendance']);
+            $attendance->image = Storage::url($image);
+        }
+
         $attendance->save();
+        $attendance->refresh();
+
         return $attendance;
     }
 }

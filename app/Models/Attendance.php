@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Attendance extends Model
 {
     use HasFactory;
+
+    public function getImageAttribute($image)
+    {
+        return route('api.attendanceImage', ['path' => $image]);
+    }
 }
