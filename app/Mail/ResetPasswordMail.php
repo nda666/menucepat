@@ -32,7 +32,7 @@ class ResetPasswordMail extends Mailable
     public function build()
     {
 
-        return $this->markdown('emails.reset', [
+        return $this->view('emails.reset', [
             'token' => $this->token
         ])->mailersend();
     }
