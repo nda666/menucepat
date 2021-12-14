@@ -7,6 +7,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Mail;
 
 class PasswordResetNotification extends Notification
 {
@@ -42,7 +43,7 @@ class PasswordResetNotification extends Notification
      */
     public function toMail($notifiable)
     {
-        return (new ResetPasswordMail($this->token))->to($notifiable->email);
+        return Mail::to($notifiable->email)->send(new ResetPasswordMail($this->token));
     }
 
     /**
