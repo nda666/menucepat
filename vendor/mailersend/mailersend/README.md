@@ -18,6 +18,12 @@ MailerSend PHP SDK
   * [Bulk emails API](#bulk-email-api)
     * [Send bulk email](#send-bulk-email)
     * [Get bulk email status](#get-bulk-email-status)
+  * [Inbound routing](#inbound-routing)
+    * [Get a list of inbound routes](#get-a-list-of-inbound-routes)
+    * [Get a single inbound route](#get-a-single-inbound-route)
+    * [Add an inbound route](#add-an-inbound-route)
+    * [Update an inbound route](#update-an-inbound-route)
+    * [Delete an inbound route](#delete-an-inbound-route)
   * [Activity API](#activity)
     * [Get a list of activities](#get-a-list-of-activities)
   * [Analytics API](#analytics)
@@ -28,10 +34,12 @@ MailerSend PHP SDK
   * [Domains API](#domains)
     * [Get a list of domains](#get-a-list-of-domains)
     * [Get domain](#get-domain)
+    * [Add a domain](#add-a-domain)
     * [Delete domain](#delete-domain)
     * [Get a list of recipients per domain](#get-a-list-of-recipients-per-domain)
     * [Update domain settings](#update-domain-settings)
     * [Verify a domain](#verify-a-domain)
+    * [Get DNS records](#get-dns-records)
   * [Messages API](#messages)
     * [Get a list of messages](#get-a-list-of-messages)
     * [Get info on a message](#get-info-on-a-message)
@@ -115,7 +123,9 @@ $emailParams = (new EmailParams())
     ->setRecipients($recipients)
     ->setSubject('Subject')
     ->setHtml('This is the HTML content')
-    ->setText('This is the text content');
+    ->setText('This is the text content')
+    ->setReplyTo('reply to')
+    ->setReplyToName('reply to name');
 
 $mailersend->email->send($emailParams);
 ```
@@ -374,6 +384,185 @@ $mailersend = new MailerSend(['api_key' => 'key']);
 $mailersend->bulkEmail->getStatus('bulk_email_id');
 ```
 
+<a name="inbound-routing"></a>
+
+## Inbound routing
+
+<a name="get-a-list-of-inbound-routes"></a>
+
+### Get a list of inbound routes
+
+```php
+use MailerSend\MailerSend;
+
+$mailersend = new MailerSend(['api_key' => 'key']);
+
+$mailersend->inbound->getAll($domainId = 'domainId', $page = 1, $limit = 10);
+```
+
+<a name="get-a-single-inbound-route"></a>
+
+### Get a single inbound route
+
+```php
+use MailerSend\MailerSend;
+
+$mailersend = new MailerSend(['api_key' => 'key']);
+
+$mailersend->inbound->find('inboundId');
+```
+
+<a name="add-an-inbound-route"></a>
+
+### Add an inbound route
+
+Example using only classes:
+
+```php
+use MailerSend\MailerSend;
+use MailerSend\Helpers\Builder\Inbound;
+use \MailerSend\Helpers\Builder\CatchFilter;
+use \MailerSend\Helpers\Builder\MatchFilter;
+use \MailerSend\Helpers\Builder\Forward;
+use \MailerSend\Helpers\Builder\Filter;
+use \MailerSend\Common\Constants;
+
+$mailersend = new MailerSend(['api_key' => 'key']);
+
+$mailersend->inbound->create(
+    (new Inbound('domainId', 'name', true))
+        ->setInboundDomain('inboundDomain')
+        ->setCatchFilter(
+            (new CatchFilter(Constants::TYPE_CATCH_RECIPIENT)
+                ->addFilter(new Filter(Constants::COMPARER_EQUAL, 'test@mailersend.com'))))
+        ->setMatchFilter(
+            (new MatchFilter(Constants::TYPE_MATCH_SENDER))
+                ->addFilter(new Filter(Constants::COMPARER_EQUAL, 'sender@mailersend.com', 'sender')))
+        ->addForward(new Forward(Constants::COMPARER_EQUAL, 'value'))
+);
+```
+
+Example using both classes and arrays:
+
+```php
+use MailerSend\MailerSend;
+use MailerSend\Helpers\Builder\Inbound;
+use \MailerSend\Helpers\Builder\CatchFilter;
+use \MailerSend\Helpers\Builder\MatchFilter;
+use \MailerSend\Helpers\Builder\Forward;
+use \MailerSend\Common\Constants;
+
+$mailersend = new MailerSend(['api_key' => 'key']);
+
+$mailersend->inbound->create(
+    (new Inbound('domainId', 'name', true))
+        ->setInboundDomain('inboundDomain')
+        ->setCatchFilter(
+            (new CatchFilter(Constants::TYPE_CATCH_RECIPIENT))
+                ->setFilters([
+                    [
+                        'comparer' => Constants::COMPARER_EQUAL,
+                        'value' => 'test@mailersend.com',
+                    ]
+                ])
+        )
+        ->setMatchFilter(
+            (new MatchFilter(Constants::TYPE_MATCH_SENDER))
+                ->setFilters([
+                    [
+                        'comparer' => Constants::COMPARER_EQUAL,
+                        'value' => 'sender@mailersend.com',
+                        'key' => 'sender',
+                    ]
+                ])
+        )
+        ->addForward(new Forward(Constants::COMPARER_EQUAL, 'value'))
+);
+```
+
+Example using only arrays:
+
+```php
+use MailerSend\MailerSend;
+use MailerSend\Helpers\Builder\Inbound;
+use \MailerSend\Helpers\Builder\CatchFilter;
+use \MailerSend\Helpers\Builder\MatchFilter;
+use \MailerSend\Helpers\Builder\Forward;
+use \MailerSend\Common\Constants;
+
+$mailersend = new MailerSend(['api_key' => 'key']);
+
+$mailersend->inbound->create(
+    (new Inbound('domainId', 'name', true))
+        ->setInboundDomain('inboundDomain')
+        ->setCatchFilter([
+            'type' => Constants::TYPE_CATCH_RECIPIENT,
+            'filters' => [
+                [
+                    'comparer' => Constants::COMPARER_EQUAL,
+                    'value' => 'test@mailersend.com',
+                ],
+            ],
+        ])
+        ->setMatchFilter([
+            'type' => Constants::TYPE_MATCH_SENDER,
+            'filters' => [
+                [
+                    'comparer' => Constants::COMPARER_EQUAL,
+                    'value' => 'sender@mailersend.com',
+                    'key' => 'sender',
+                ],
+            ],
+        ])
+        ->setForwards([
+            [
+                'type' => Constants::COMPARER_EQUAL,
+                'value' => 'value',
+            ]
+        ])
+);
+```
+
+<a name="update-an-inbound-route"></a>
+
+### Update an inbound route
+
+The examples on building the `Inbound` object portrayed in the 'Add an inbound route' also apply in here.
+
+```php
+use MailerSend\MailerSend;
+use MailerSend\Helpers\Builder\Inbound;
+use \MailerSend\Helpers\Builder\CatchFilter;
+use \MailerSend\Helpers\Builder\MatchFilter;
+use \MailerSend\Helpers\Builder\Forward;
+use \MailerSend\Common\Constants;
+
+$mailersend = new MailerSend(['api_key' => 'key']);
+
+$mailersend->inbound->update(
+    'inboundId',
+    (new Inbound('domainId', 'name', true))
+        ->setInboundDomain('inboundDomain')
+        ->setCatchFilter(
+            (new CatchFilter(Constants::TYPE_CATCH_ALL))
+        )
+        ->setMatchFilter(new MatchFilter(Constants::TYPE_MATCH_ALL))
+        ->addForward(new Forward(Constants::COMPARER_EQUAL, 'value'))
+);
+```
+
+<a name="delete-an-inbound-route"></a>
+
+### Delete an inbound route
+
+```php
+use MailerSend\MailerSend;
+
+$mailersend = new MailerSend(['api_key' => 'key']);
+
+$mailersend->inbound->delete('inboundId');
+```
+
 <a name="activity"></a>
 
 ## Activity
@@ -501,6 +690,25 @@ $mailersend = new MailerSend(['api_key' => 'key']);
 $mailersend->domain->find('domain_id');
 ```
 
+<a name="add-a-domain"></a>
+
+### Add a domain
+
+```php
+use MailerSend\MailerSend;
+use MailerSend\Helpers\Builder\DomainParams;
+
+$mailersend = new MailerSend(['api_key' => 'key']);
+
+$domainParams = (new DomainParams('domainName'))
+                    ->setReturnPathSubdomain('returnPath')
+                    ->setCustomTrackingSubdomain('customTracking')
+                    ->getInboundRoutingSubdomain('inboundRouting');
+
+$mailersend->domain->create($domainParams);
+
+```
+
 <a name="delete-domain"></a>
 ### Delete domain
 
@@ -514,7 +722,7 @@ $mailersend->domain->delete('domain_id');
 
 <a name="get-a-list-of-recipients-per-domain"></a>
 
-## Get a list of recipients per domain
+### Get a list of recipients per domain
 
 ```php
 use MailerSend\MailerSend;
@@ -560,6 +768,18 @@ use MailerSend\MailerSend;
 $mailersend = new MailerSend(['api_key' => 'key']);
 
 $mailersend->domain->verify('domain_id');
+```
+
+<a name="get-dns-records"></a>
+
+### Get DNS records
+
+```php
+use MailerSend\MailerSend;
+
+$mailersend = new MailerSend(['api_key' => 'key']);
+
+$mailersend->domain->getDnsRecords('domain_id');
 ```
 
 <a name="messages"></a>

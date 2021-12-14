@@ -9,7 +9,7 @@ Reset Password
 @endcomponent
 
 Atau silahkan copy dan paste link dibawah ini.
-https://menucepat.com?token='$token
+https://menucepat.com?token={{ $token }}
 
 Terima Kasih,<br>
 {{ config('app.name') }}
