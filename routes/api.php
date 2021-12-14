@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\LocationController;
 use App\Http\Controllers\Api\PasswordController;
 use App\Http\Controllers\Api\ProfileController;
+use App\Http\Controllers\Api\SettingController;
 use App\Http\Resources\Api\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -43,6 +44,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('/attendance/image', [AttendanceController::class, 'attendanceImage'])->name('api.attendanceImage');
 
     Route::get('location', [LocationController::class, 'index'])->name('api.location');
+    Route::get('setting', [SettingController::class, 'index'])->name('api.setting');
 });
 
 

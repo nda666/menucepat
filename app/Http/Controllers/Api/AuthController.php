@@ -79,6 +79,9 @@ class AuthController extends Controller
             return response()->json(['message' => 'Device ID tidak sesuai dengan server'], 401);
         }
 
+        $user->notif_id = $userLoginRequest->post('notif_id');
+        $user->save();
+
         $this->clearLoginAttempts($userLoginRequest);
         return new UserResource(auth()->user());
     }
