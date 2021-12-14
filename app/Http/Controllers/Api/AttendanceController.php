@@ -32,19 +32,18 @@ class AttendanceController extends Controller
     {
         $attendance = $this->attendaceRepo->clockIn($clockInRequest);
 
-        return $attendance ? new BaseResource($attendance) : response()->json(['message' => 'Absensi gagal disimpan', 501]);
+        return $attendance ? new BaseResource($attendance) : response()->json(['message' => 'Absensi gagal disimpan'], 501);
     }
 
     public function clockOut(ClockOutRequest $clockOutRequest)
     {
         $attendance = $this->attendaceRepo->clockOut($clockOutRequest);
 
-        return $attendance ? new BaseResource($attendance) : response()->json(['message' => 'Absensi gagal disimpan', 501]);
+        return $attendance ? new BaseResource($attendance) : response()->json(['message' => 'Absensi gagal disimpan'], 501);
     }
 
     public function attendanceImage(Request $request)
     {
-
         $attendance = Attendance::where('image', $request->get('path'))->first();
         // if (auth()->user()->can('view', $attendance)) {
         return Storage::response($request->get('path'));
