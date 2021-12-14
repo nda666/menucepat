@@ -55,7 +55,7 @@ class AttendanceRepository extends BaseRepository
         $attendance->save();
         $attendance->refresh();
 
-        return $attendance->get;
+        return $attendance;
     }
 
     public function clockOut(FormRequest $request)
