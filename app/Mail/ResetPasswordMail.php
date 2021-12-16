@@ -35,6 +35,6 @@ class ResetPasswordMail extends Mailable
 
         return $this->markdown('emails.reset', [
             'token' => $this->token
-        ])->sendinblue([null]);
+        ]);
     }
 }
