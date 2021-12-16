@@ -7,11 +7,10 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Arr;
-use Webup\LaravelSendinBlue\SendinBlue;
 
 class ResetPasswordMail extends Mailable
 {
-    use Queueable, SerializesModels, SendinBlue;
+    use Queueable, SerializesModels;
 
     protected $token;
 
