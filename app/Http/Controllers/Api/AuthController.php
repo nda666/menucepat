@@ -3,16 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\UpdateProfileRequest;
 use App\Http\Requests\Api\UserLoginRequest;
-use App\Http\Resources\BaseResource;
 use App\Http\Resources\Api\UserResource;
 use App\Models\User;
 use App\Repositories\UserRepository;
 use Auth;
 use Hash;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
-use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
@@ -22,12 +19,19 @@ class AuthController extends Controller
 
     protected $decayMinutes = 60;
 
+    protected $userRepository;
+
+    public function __construct(UserRepository $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
+
     protected function username()
     {
         return 'email';
     }
 
-    public function login(UserLoginRequest $userLoginRequest, UserRepository $userRepository)
+    public function login(UserLoginRequest $userLoginRequest)
     {
         $credentials = $userLoginRequest->only(['email', 'password']);
         $user = User::where('email', $credentials['email'])
@@ -56,7 +60,7 @@ class AuthController extends Controller
 
             if ($this->hasTooManyLoginAttempts($userLoginRequest)) {
                 // di user repo kita lock akun nya
-                $userRepository->toggleLockAccount($user, true);
+                $this->userRepository->toggleLockAccount($user, true);
 
                 /**
                  * Kita hapus perhitungan gagal login nya.
@@ -83,6 +87,6 @@ class AuthController extends Controller
         $user->save();
 
         $this->clearLoginAttempts($userLoginRequest);
-        return new UserResource(auth()->user());
+        return new UserResource($this->userRepository->find($user->id));
     }
 }

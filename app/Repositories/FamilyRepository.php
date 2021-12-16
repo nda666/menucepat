@@ -15,6 +15,11 @@ class FamilyRepository extends BaseRepository
         parent::__construct($model);
     }
 
+    public function findByUserId($id)
+    {
+        return $this->model->whereUserId($id)->get();
+    }
+
     public function paginate(Request $request)
     {
         $userTable = with(new User)->getTable();

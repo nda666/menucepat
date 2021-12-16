@@ -4,10 +4,17 @@ namespace App\Http\Resources\Api;
 
 use App\Enums\BloodType;
 use App\Enums\SexType;
+use App\Models\User;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class UserResource extends JsonResource
 {
+
+    protected $success;
+    public $collects = User::class;
+
+    public static $wrap = 'data';
+
     public function __construct($resource, $success = true)
     {
         $this->resource = $resource;
@@ -24,13 +31,13 @@ class UserResource extends JsonResource
         $data = parent::toArray($request);
         $data['blood'] = BloodType::getDescription($data['blood']);
         $data['sex'] = SexType::getDescription($data['sex']);
-
-        if (!is_null($this->success)) {
-            return [
-                'success' => $this->success,
-                'data' => $data,
-            ];
-        }
         return $data;
+    }
+
+    public function with($request)
+    {
+        return [
+            'success' => $this->success,
+        ];
     }
 }

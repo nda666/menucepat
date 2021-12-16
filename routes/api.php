@@ -2,10 +2,12 @@
 
 use App\Http\Controllers\Api\AttendanceController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\FamilyController;
 use App\Http\Controllers\Api\LocationController;
 use App\Http\Controllers\Api\PasswordController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\SettingController;
+use App\Http\Controllers\Api\UserController;
 use App\Http\Resources\Api\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -37,6 +39,10 @@ Route::middleware(['auth:api'])->group(function () {
     });
     Route::post('/profile', [ProfileController::class, 'update'])->name('api.profile');
     Route::post('/password', [ProfileController::class, 'password'])->name('api.password');
+
+
+    Route::get('/users', [UserController::class, 'index'])->name('api.users');
+    Route::get('/family', [FamilyController::class, 'index'])->name('api.family');
 
     Route::post('/clock-in', [AttendanceController::class, 'clockIn'])->name('api.clockIn');
     Route::post('/clock-out', [AttendanceController::class, 'clockOut'])->name('api.clockOut');
