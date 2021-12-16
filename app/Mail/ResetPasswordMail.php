@@ -7,13 +7,11 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Arr;
-use MailerSend\Helpers\Builder\Personalization;
-use MailerSend\Helpers\Builder\Variable;
-use MailerSend\LaravelDriver\MailerSendTrait;
+use Webup\LaravelSendinBlue\SendinBlue;
 
 class ResetPasswordMail extends Mailable
 {
-    use Queueable, SerializesModels, MailerSendTrait;
+    use Queueable, SerializesModels, SendinBlue;
 
     protected $token;
 
@@ -38,33 +36,6 @@ class ResetPasswordMail extends Mailable
 
         return $this->markdown('emails.reset', [
             'token' => $this->token
-        ])->mailersend(
-            // Template ID
-            null,
-            // Variables for simple personalization
-            [
-                new Variable($to, ['name' => 'Your Name'])
-            ],
-            // Tags
-            ['tag'],
-            // Advanced personalization
-            [
-                new Personalization($to, [
-                    'var' => 'variable',
-                    'number' => 123,
-                    'object' => [
-                        'key' => 'object-value'
-                    ],
-                    'objectCollection' => [
-                        [
-                            'name' => 'John'
-                        ],
-                        [
-                            'name' => 'Patrick'
-                        ]
-                    ],
-                ])
-            ]
-        );
+        ])->sendinblue([null]);
     }
 }

@@ -89,17 +89,6 @@
       'Excel' => 'Maatwebsite\\Excel\\Facades\\Excel',
     ),
   ),
-  'mailersend/laravel-driver' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'MailerSend\\LaravelDriver\\LaravelDriverServiceProvider',
-    ),
-    'aliases' => 
-    array (
-      'LaravelDriver' => 'MailerSend\\LaravelDriver\\LaravelDriverFacade',
-    ),
-  ),
   'nesbot/carbon' => 
   array (
     'providers' => 
