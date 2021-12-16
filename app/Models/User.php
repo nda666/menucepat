@@ -63,6 +63,6 @@ class User extends Authenticatable
 
     public function getAvatarAttribute($avatar)
     {
-        return $avatar ? Storage::url($avatar) : '';
+        return $avatar ? asset($avatar) : '';
     }
 }
