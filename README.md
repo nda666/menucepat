@@ -25,6 +25,10 @@
     ```
 
 ### Testing
+- copy .env.example dan rename menjadi .env.testing
+    ```console
+    cp .env.example .env.testing
+    ```
 - Isi DB_DATABASE,DB_USERNAME,DB_PASSWORD pada file .env.testing. **Selalu buat database terpisah untuk testing**. Contoh:
     ```
     DB_CONNECTION=mysql
