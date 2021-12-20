@@ -50,9 +50,9 @@ final class Versions
   'guzzlehttp/psr7' => '2.1.0@089edd38f5b8abba6cb01567c2a8aaa47cec4c72',
   'hanneskod/classtools' => '1.2.1@d365ddac0e602027c0471ea292f4ba2afcb49394',
   'jeroennoten/laravel-adminlte' => 'v3.7.2@d86acf000578470709b4a146b05eb9a7fd0cdc8c',
-  'laminas/laminas-code' => '4.5.0@c99ef8e5629c33bfaa3a8f1df773e916af564cd6',
-  'laravel/framework' => 'v8.75.0@0bb91d3176357da232da69762a64b0e0a0988637',
-  'laravel/sanctum' => 'v2.12.2@76b2d552c00477d520338889160f80a0cfb5fc55',
+  'laminas/laminas-code' => '4.5.1@6fd96d4d913571a2cd056a27b123fa28cb90ac4e',
+  'laravel/framework' => 'v8.76.2@c67acfdc968f487b6235435080eef62a7e2ed055',
+  'laravel/sanctum' => 'v2.13.0@b4c07d0014b78430a3c827064217f811f0708eaa',
   'laravel/serializable-closure' => 'v1.0.5@25de3be1bca1b17d52ff0dc02b646c667ac7266c',
   'laravel/tinker' => 'v2.6.3@a9ddee4761ec8453c584e393b393caff189a3e42',
   'laravel/ui' => 'v3.4.0@b3e804559bf3973ecca160a4ae1068e6c7c167c6',
@@ -147,7 +147,7 @@ final class Versions
   'filp/whoops' => '2.14.4@f056f1fe935d9ed86e698905a957334029899895',
   'hamcrest/hamcrest-php' => 'v2.0.1@8c3d0a3f6af734494ad8f6fbbee0ba92422859f3',
   'justinrainbow/json-schema' => '5.2.11@2ab6744b7296ded80f8cc4f9509abbff393399aa',
-  'laravel/sail' => 'v1.12.10@9d5000703c7f811588a780b9aab91cca5c336319',
+  'laravel/sail' => 'v1.12.12@c60773f04f093bd1d2f3b99ff9e5a1aa5b05b8b6',
   'mockery/mockery' => '1.4.4@e01123a0e847d52d186c5eb4b9bf58b0c6d00346',
   'myclabs/deep-copy' => '1.10.2@776f831124e9c62e1a2c601ecc52e776d8bb7220',
   'nunomaduro/collision' => 'v5.10.0@3004cfa49c022183395eabc6d0e5207dfe498d00',
@@ -185,7 +185,7 @@ final class Versions
   'seld/phar-utils' => '1.2.0@9f3452c93ff423469c0d56450431562ca423dcee',
   'symfony/filesystem' => 'v5.4.0@731f917dc31edcffec2c6a777f3698c33bea8f01',
   'theseer/tokenizer' => '1.2.1@34a41e998c2183e22995f158c581e7b5e755ab9e',
-  'laravel/laravel' => 'dev-master@7e6ca0fcf717910ff7f6dff4a077047c9c8a67f0',
+  'laravel/laravel' => 'dev-master@7d61a119f0a9423e1ef9034e5493343c05c72eef',
 );
 
     private function __construct()
