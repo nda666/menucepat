@@ -5,23 +5,23 @@
 ## Getting Started
 - copy .env.example dan rename menjadi .env isi DB_DATABASE,DB_USERNAME,DB_PASSWORD sesuai server mu.
     ```console
-    ~$ cp .env.example .env
+    cp .env.example .env
     ```
 - Generate laravel app key
     ```console
-    ~$ php artisan key:generate
+    php artisan key:generate
     ```
 - Jalankan composer install
     ```console
-    ~$ composer install
+    composer install
     ```
 - Jalankan migrate
     ```console
-    ~$ php artisan migrate
+    php artisan migrate
     ```
 - Jalankan Admin Seeder
     ```console
-    ~$ php artisan db:seed AdminSeeder
+    php artisan db:seed AdminSeeder
     ```
 
 ### Testing
@@ -36,5 +36,5 @@
     ```
 - Untuk menjalankan Testing
     ```console
-    ~$ vendor/bin/phpunit --testdox
+    vendor/bin/phpunit --testdox
     ```
