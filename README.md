@@ -1,6 +1,6 @@
 # APP ABSENSI IRIS
 
-[![Actions Status](https://github.com/nda666/menucepat/workflows/testing/badge.svg)](https://github.com/nda666/menucepat/actions)
+[![Actions Status](https://github.com/nda666/absensi-iris/workflows/testing/badge.svg)](https://github.com/nda666/absensi-iris/actions)
 
 ## Getting Started
 - copy .env.example dan rename menjadi .env isi DB_DATABASE,DB_USERNAME,DB_PASSWORD sesuai server mu.
