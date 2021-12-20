@@ -58,8 +58,8 @@ class AdminUserTest extends TestCase
                 'whatsapp' => 'Test Whatsapp',
             ]);
 
-        // should return 200 OK
-        $response->assertOk();
+        // should return 201
+        $response->assertStatus(201);
         // Should return response like this
         $response->assertJson([
             'success' => true,
