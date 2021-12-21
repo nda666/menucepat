@@ -83,9 +83,9 @@ class UserRepository extends BaseRepository
      * 
      * @return App/Models/User
      */
-    public function update(FormRequest $request)
+    public function update(FormRequest $request, $id = null)
     {
-        $user = User::find($request->post('id'));
+        $user = User::findOrFail($request->post('id') ? $request->post('id') : $id);
         if ($request->post('password')) {
             $user->password = Hash::make($request->post('password'));
         }

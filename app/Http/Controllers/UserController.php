@@ -97,12 +97,14 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        return $this->userRepo->delete($id);
+        $user =  $this->userRepo->delete($id);
+        return new BaseResource($user);
     }
 
     public function unlock(User $user)
     {
-        return $this->userRepo->toggleLockAccount($user);
+        $userRes = $this->userRepo->toggleLockAccount($user);
+        return new BaseResource($userRes);
     }
 
     public function select2(Request $request)

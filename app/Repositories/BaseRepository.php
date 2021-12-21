@@ -54,7 +54,7 @@ class BaseRepository
      */
     public function find($id)
     {
-        return $this->model->find($id);
+        return $this->model->findOrFail($id);
     }
 
     /**
@@ -81,6 +81,8 @@ class BaseRepository
      */
     public function delete($id)
     {
-        return $this->model->where($this->model->getKeyName(), $id)->delete();
+        $model = $this->model->findOrFail($id);
+        $model->delete();
+        return $model;
     }
 }
