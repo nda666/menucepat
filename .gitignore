@@ -10,3 +10,4 @@ error_log
 /public/storage
 /storage/*.key
 .phpunit.result.cache
+node_modules
