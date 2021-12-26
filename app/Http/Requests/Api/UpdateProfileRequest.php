@@ -24,7 +24,8 @@ class UpdateProfileRequest extends FormRequest
     public function rules()
     {
         return [
-            'avatar' => 'image'
+            'avatar' => 'image',
+            'email' => 'email|unique:users,email,' . auth()->user()->id . ',id'
         ];
     }
 }

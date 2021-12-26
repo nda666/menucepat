@@ -36,9 +36,9 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('/profile', function () {
         $result = new UserResource(auth()->user(), null);
         return $result->jsonSerialize();
-    });
-    Route::post('/profile', [ProfileController::class, 'update'])->name('api.profile');
-    Route::post('/password', [ProfileController::class, 'password'])->name('api.password');
+    })->name('api.profile');
+    Route::post('/profile', [ProfileController::class, 'update'])->name('api.profile.save');
+    Route::post('/password', [ProfileController::class, 'password'])->name('api.password.save');
 
 
     Route::get('/users', [UserController::class, 'index'])->name('api.users');

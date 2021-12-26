@@ -141,6 +141,9 @@ class UserRepository extends BaseRepository
         if ($formRequest->post('whatsapp')) {
             $user->whatsapp = $formRequest->post('whatsapp');
         }
+        if ($formRequest->post('email')) {
+            $user->email = $formRequest->post('email');
+        }
         $user->save();
 
         return $user;
