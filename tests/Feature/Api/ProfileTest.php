@@ -4,7 +4,6 @@ namespace Tests\Feature\Api;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Log;
 use Tests\TestCase;
 
 class ProfileLoginTest extends TestCase

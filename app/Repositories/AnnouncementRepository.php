@@ -4,6 +4,8 @@ namespace App\Repositories;
 
 use App\Models\Announcement;
 use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use Storage;
@@ -16,18 +18,42 @@ class AnnouncementRepository extends BaseRepository
         parent::__construct($model);
     }
 
+    /**
+     * Filtering builder with Request|FormRequest
+     *
+     * @param   Builder  $announcement  Eloquent Builder instance
+     * @param   mixed    $request       Request | FormRequest
+     *
+     * @return  Builder                 Builder
+     */
+    private function filter(Builder $announcement, $request)
+    {
+
+        $request->get('title') && $announcement->where('title', 'like', '%' . $request->get('title') . '%');
+
+        $request->get('description') && $announcement->where('description', 'like', '%' . $request->get('description') . '%');
+
+        $request->get('start_date') && $announcement->where('start_date', '>=', $request->get('start_date'));
+
+        $request->get('end_date') && $announcement->where('end_date', '<=', $request->get('end_date'));
+        return $announcement;
+    }
+
+    public function findFilter(Request $request)
+    {
+        $model = Announcement::select('announcements.*');
+        $announcement = $this->filter($model, $request);
+        return $announcement->get();
+    }
+
     public function paginate(Request $request)
     {
         // $userTable = with(new User)->getTable();
         // $announcementTable = with(new Announcement)->getTable();
         $model = Announcement::select('announcements.*');
-
         return DataTables::eloquent($model)
             ->filter(function ($announcement) use ($request) {
-                $request->get('title') && $announcement->where(function ($where) use ($request) {
-                    $where->where('title', 'like', '%' . $request->get('title') . '%');
-                    $where->where('description', 'like', '%' . $request->get('title') . '%');
-                });
+                $this->filter($announcement, $request);
             })->toArray();
     }
 

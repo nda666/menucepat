@@ -42,10 +42,12 @@
                 order: [1, 'desc'],
                 ajax: {
                     url: '{{ route('announcement.table') }}',
-
                     data: function(d) {
                         return $.extend({}, d, {
                             nama: $('#filterNama').val(),
+                            description: $('#filterDescription').val(),
+                            start_date: $('#filterStartDate').val() ? moment( $('#filterStartDate').val() , 'DD/MM/YYYY').format('YYYY-MM-DD') : '',
+                            end_date: $('#filterEndDate').val() ? moment( $('#filterEndDate').val() , 'DD/MM/YYYY').format('YYYY-MM-DD') : '',
                         });
                     }
                 },

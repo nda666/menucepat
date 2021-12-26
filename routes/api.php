@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AnnouncementController;
 use App\Http\Controllers\Api\AttendanceController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\FamilyController;
@@ -51,6 +52,8 @@ Route::middleware(['auth:api'])->group(function () {
 
     Route::get('location', [LocationController::class, 'index'])->name('api.location');
     Route::get('setting', [SettingController::class, 'index'])->name('api.setting');
+
+    Route::get('announcement', [AnnouncementController::class, 'index'])->name('api.announcement');
 });
 
 
