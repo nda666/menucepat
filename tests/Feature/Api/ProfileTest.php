@@ -7,7 +7,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Log;
 use Tests\TestCase;
 
-class AdminLoginTest extends TestCase
+class ProfileLoginTest extends TestCase
 {
     use RefreshDatabase;
 
