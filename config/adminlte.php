@@ -271,7 +271,7 @@ return [
         ['header' => 'laporan'],
         [
             'text'        => 'Absensi Pegawai',
-            'url'         => 'report',
+            'url'         => 'attendance',
             'icon'        => 'fas fa-fw fa-fingerprint',
             // 'label'       => 4,
             'label_color' => 'success',

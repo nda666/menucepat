@@ -65,7 +65,6 @@ class AdminUserTest extends TestCase
         $response->assertJson([
             'success' => true,
             'data' => [
-                'id' => 1,
                 'nama' => 'Adha Bakhtiar',
                 'email' => 'adhabakhtiar@gmail.com',
                 'tgl_lahir' => '1992-11-06',

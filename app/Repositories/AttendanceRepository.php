@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Enums\AttendanceType;
 use App\Models\Attendance;
 use App\Models\User;
 use Carbon\Carbon;
@@ -82,5 +83,30 @@ class AttendanceRepository extends BaseRepository
         $attendance->refresh();
 
         return $attendance;
+    }
+
+
+
+    public function paginate(Request $request)
+    {
+        $userTable = with(new User)->getTable();
+        $attendancesTable = with(new Attendance)->getTable();
+        $model = Attendance::select('attendances.*', 'users.nama as user_nama')
+            ->join($userTable, $userTable . '.id', '=', $attendancesTable . '.user_id');
+
+        return DataTables::eloquent($model)
+            ->filter(function ($attendances) use ($request) {
+                $request->get('user_nama') && $attendances->where('users.nama', 'like', "%{$request->get('user_nama')}%");
+
+                $request->get('start_date') && $attendances->where('attendances.clock_in', '>=', $request->get('start_date'));
+
+                $request->get('end_date') && $attendances->where('attendances.clock_in', '<=', $request->get('end_date'));
+            })
+            ->setTransformer(function ($transform) {
+                $data = $transform->toArray();
+                $data['type'] = AttendanceType::getKey($data['type']);
+                return $data;
+            })
+            ->toArray();
     }
 }

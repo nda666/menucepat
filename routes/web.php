@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AnnouncementController;
+use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FamilyController;
@@ -56,6 +57,9 @@ Route::middleware('auth:admin')->group(function () {
 
     Route::get('/announcement/table', [AnnouncementController::class, 'table'])->name('announcement.table');
     Route::resource('announcement', AnnouncementController::class);
+
+    Route::get('/attendance/table', [AttendanceController::class, 'table'])->name('attendance.table');
+    Route::resource('attendance', AttendanceController::class)->only(['index', 'show']);
 
     Route::get('/setting/table', [SettingController::class, 'table'])->name('setting.table');
     Route::resource('setting', SettingController::class);
