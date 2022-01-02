@@ -29,7 +29,7 @@
                     <x-adminlte-select name="sex" required autocomplete="off" label="Gender">
                         <option disabled value="" selected>Pilih Gender</option>
                         @foreach ($sexType as $v)
-                            <option value="{{ $v->value }}">{{ $v->description }}</option>
+                        <option value="{{ $v->value }}">{{ $v->description }}</option>
                         @endforeach
 
                     </x-adminlte-select>
@@ -49,8 +49,8 @@
 </div>
 
 @push('js')
-    <script>
-        (function() {
+<script>
+    (function() {
             $("#select-user_id").select2({
                 dropdownParent: $("#modalCreateFamily"),
                 width: '100%',
@@ -85,7 +85,7 @@
                     },
                     cache: true
                 },
-                placeholder: 'Pilih User',
+                placeholder: 'Pilih Pegawai',
             });
 
             $('input[name="_token"]').val('{{ csrf_token() }}');
@@ -147,5 +147,5 @@
                 })
             })
         })()
-    </script>
+</script>
 @endpush

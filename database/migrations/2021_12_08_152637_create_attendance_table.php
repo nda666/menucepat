@@ -15,8 +15,8 @@ class CreateAttendanceTable extends Migration
     {
         Schema::create('attendances', function (Blueprint $table) {
             $table->id();
-            $table->timestamp('clock_in')->nullable();
-            $table->timestamp('clock_out')->nullable();
+            $table->timestamp('check_clock')->nullable();
+            $table->tinyInteger('clock_type');
             $table->string('latitude')->nullable();
             $table->string('longtitude')->nullable();
             $table->bigInteger('location_id')->unsigned()->nullable();

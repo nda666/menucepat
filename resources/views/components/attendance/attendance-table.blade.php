@@ -9,9 +9,10 @@
         <tr>
             <th>Aksi</th>
             <th>ID</th>
+            <th>NIK</th>
             <th>Nama</th>
-            <th>Clock In</th>
-            <th>Clock Out</th>
+            <th>Check Clock</th>
+            <th>Tipe Clock</th>
             <th>Tipe</th>
             <th>Latitude</th>
             <th>Longtitude</th>
@@ -33,6 +34,8 @@
 </style>
 @endpush
 @push('js')
+<link rel="stylesheet" href="https://cdn.datatables.net/fixedcolumns/4.0.1/css/fixedColumns.dataTables.min.css" />
+<script src="https://cdn.datatables.net/fixedcolumns/4.0.1/js/dataTables.fixedColumns.min.js"></script>
 <script>
     (function() {
             function refreshTable() {
@@ -42,13 +45,16 @@
             window['{{ $id }}'] = $('#{{ $id }}').DataTable({
                 processing: true,
                 serverSide: true,
+                fixedColumns:   {
+            left: 1,
+        },
                 scrollX: true,
                 order: [1, 'desc'],
                 ajax: {
                     url: '{{ route('attendance.table') }}',
                     data: function(d) {
                         return $.extend({}, d, {
-                            nama: $('#filterNama').val(),
+                            nameOrNIK: $('#filterNameOrNIK').val(),
                             description: $('#filterDescription').val(),
                             start_date: $('#filterStartDate').val() ? moment( $('#filterStartDate').val() , 'DD/MM/YYYY').format('YYYY-MM-DD') : '',
                             end_date: $('#filterEndDate').val() ? moment( $('#filterEndDate').val() , 'DD/MM/YYYY').format('YYYY-MM-DD') : '',
@@ -70,7 +76,7 @@
                                     </a>
 
                                     <div  class="dropdown-menu" data-target="#dropdownMenuLink${val}" id="dropdown-menu-${val}" style="position: fixed" aria-labelledby="dropdownMenuLink${val}">
-                                        <h6 class="dropdown-header">${row.title}</h6>
+                                        <h6 class="dropdown-header">${row.id} | ${row.user_nama}</h6>
                                         <div class="dropdown-divider"></div>
                                         <a class="dropdown-item view-action" href="#lihat">Lihat</a>
                                         <a class="dropdown-item edit-action" href="#edit">Ubah</a>
@@ -86,16 +92,20 @@
                         
                     },
                     {
+                        name: 'nik',
+                        data: 'nik'
+                    },
+                    {
                         name: 'user_nama',
                         data: 'user_nama'
                     },
                     {
-                        name: 'attendances.clock_in',
-                        data: 'clock_in'
+                        name: 'attendances.check_clock',
+                        data: 'check_clock'
                     },
                     {
-                        name: 'attendances.clock_out',
-                        data: 'clock_out'
+                        name: 'attendances.clock_type',
+                        data: 'clock_type'
                     },
                     {
                         name: 'attendances.type',

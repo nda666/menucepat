@@ -19,8 +19,8 @@
         <div class="col-md-6">
 
 
-            <x-input-horizontal label="Nama Pegawai" id="filterName" name="filterName" autocomplete="off"
-                placeholder="Cari dari nama pegawai" />
+            <x-input-horizontal label="Nama Pegawai" id="filterNameOrNIK" name="filterNameOrNIK" autocomplete="off"
+                placeholder="Cari dari nama pegawai atau NIK" />
 
             <div class="form-group row">
                 <div class="offset-md-3 col-md-9">

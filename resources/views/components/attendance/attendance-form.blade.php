@@ -1,11 +1,11 @@
 <!-- Button trigger modal -->
 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalCreateAttendance">
-    Tambah
+    Tambah By System
 </button>
 
 <!-- Modal -->
 <div class="modal fade" id="modalCreateAttendance" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog  modal-lg" role="document">
 
         <form id="formCreateAttendance">
             <div class="modal-content">
@@ -18,11 +18,40 @@
                 <div class="modal-body">
                     {{ csrf_field() }}
                     <input type="hidden" name="id" autocomplete="off">
-                    <x-adminlte-input id="dateRange" required name="date" autocomplete="off"
-                        placeholder="Tanggal Mulai - Tanggal Selesai" label="Tanggal Mulai - Tanggal Selesai" />
-                    <x-adminlte-input name="title" label="Judul" required autocomplete="off" placeholder="Judul" />
-                    <x-adminlte-textarea name="description" label="Deskripsi" required autocomplete="off"
-                        placeholder="Deskripsi" />
+                    <div class="row">
+                        <div class="col-md-4">
+                            <x-adminlte-input id="dateRange" required name="check_clock" autocomplete="off"
+                                placeholder="Check Clock" label="Check Clock" />
+                        </div>
+                        <div class="col-md-8">
+                            <x-pegawai-select2 name="user_id" id="selectPegawai" label="Pegawai" required
+                                autocomplete="off" placeholder="Pegawai" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Tipe Check Clock</label>
+                        <div class="d-block">
+                            @foreach ($clockType as $k => $v)
+                            <div class="form-check form-check-inline">
+                                <input required class="form-check-input" type="radio" name="inlineRadioOptions"
+                                    id="inlineRadio{{$k}}" value="{{ $k }}">
+                                <label class="form-check-label" for="inlineRadio{{$k}}">{{ strtoupper($v) }}</label>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    <x-adminlte-select name="type" label="Keterangan" required autocomplete="off"
+                        placeholder="Keterangan">
+                        <option disabled value="" selected>Pilih Type Check Clock</option>
+                        @foreach ($clockType as $k => $v)
+                        <option value="{{ $k }}">{{ strtoupper($v) }}</option>
+                        @endforeach
+                    </x-adminlte-select>
+
+                    <x-adminlte-textarea name="description" label="Keterangan" required autocomplete="off"
+                        placeholder="Keterangan" />
+                    <x-adminlte-textarea name="reason" label="Alasan" required autocomplete="off"
+                        placeholder="Alasan" />
 
                     {{-- <div class="row">
                         <div class="col-md-6">
@@ -52,10 +81,9 @@
 
 <script>
     (function() {
-
-
+        
             $('#dateRange').daterangepicker({
-
+                singleDatePicker: true,
                 timePicker: true,
                 timePicker24Hour: true,
                 drops: 'top',

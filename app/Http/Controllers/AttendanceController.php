@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ClockType;
+use App\Http\Requests\AttendanceRequest;
 use App\Http\Resources\BaseResource;
-use App\Models\Attendance;
 use App\Repositories\AttendanceRepository;
 use Illuminate\Http\Request;
 
@@ -23,12 +24,24 @@ class AttendanceController extends Controller
      */
     public function index()
     {
+
         return view('attendance.index');
     }
 
     public function table(Request $request)
     {
         return response()->json($this->attendanceRepo->paginate($request));
+    }
+
+    /**
+     * Store Attendance
+     *
+     * @param   AttendanceRequest  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(AttendanceRequest $request)
+    {
+        return response()->json($this->attendanceRepo->createFromAdmin($request));
     }
 
     /**

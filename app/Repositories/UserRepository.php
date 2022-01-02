@@ -25,11 +25,14 @@ class UserRepository extends BaseRepository
 
     public function select2(Request $request)
     {
-        $user = User::query();
+        $user = User::select('id', 'nama', 'nik');
         if ($request->get('search')) {
-            $user->where('users.nama', 'like', '%' . $request->get('search') . '%');
+            $user->where(function ($multiWhere) use ($request) {
+                $multiWhere->where('users.nama', 'like', '%' . $request->get('search') . '%')
+                    ->orWhere('users.nik', 'like',  $request->get('search') . '%');
+            });
         }
-        return $user->paginate(20);
+        return $user->orderBy('users.nama', 'asc')->paginate(20);
     }
 
     public function paginate(Request $request)

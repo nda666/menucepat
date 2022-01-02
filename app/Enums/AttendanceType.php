@@ -9,4 +9,5 @@ final class AttendanceType extends Enum
 {
     const LIVE = 0;
     const VISIT = 1;
+    const SYSTEM = 2;
 }

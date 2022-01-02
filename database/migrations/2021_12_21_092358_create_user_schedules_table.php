@@ -16,9 +16,9 @@ class CreateUserSchedulesTable extends Migration
         Schema::create('user_schedules', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('user_id')->unsigned();
-            $table->timestamp('start_time');
-            $table->time('work_time');
-
+            $table->string('code');
+            $table->timestamp('duty_on');
+            $table->timestamp('duty_off');
             $table->timestamps();
         });
     }

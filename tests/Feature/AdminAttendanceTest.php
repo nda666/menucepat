@@ -28,8 +28,8 @@ class AdminAttendanceTest extends TestCase
                 '*' => [
                     'id',
                     'user_nama',
-                    'clock_in',
-                    'clock_out',
+                    'check_clock',
+                    'clock_type',
                     'location_id',
                     'latitude',
                     'longtitude',

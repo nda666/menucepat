@@ -11,8 +11,8 @@
 @section('content')
 <section class="pt-3 pb-2">
     <div class="btn-group" role="group" aria-label="...">
-        {{--
-        <x-attendance.attendance-form grid-id="grid" /> --}}
+        
+        <x-attendance.attendance-form grid-id="grid" />
         <button type="button" id="search" class="btn btn-primary" data-toggle="collapse" data-target="#filterCollapse"
             aria-expanded="false" aria-controls="filterCollapse">Filter</button>
     </div>
