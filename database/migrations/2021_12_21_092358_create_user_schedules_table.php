@@ -17,8 +17,8 @@ class CreateUserSchedulesTable extends Migration
             $table->id();
             $table->bigInteger('user_id')->unsigned();
             $table->string('code');
-            $table->timestamp('duty_on');
-            $table->timestamp('duty_off');
+            $table->timestamp('duty_on')->nullable();
+            $table->timestamp('duty_off')->nullable();
             $table->timestamps();
         });
     }

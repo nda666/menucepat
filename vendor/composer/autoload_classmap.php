@@ -6906,6 +6906,7 @@ return array(
     'Tests\\Feature\\AdminLoginTest' => $baseDir . '/tests/Feature/AdminLoginTest.php',
     'Tests\\Feature\\AdminUserTest' => $baseDir . '/tests/Feature/AdminUserTest.php',
     'Tests\\Feature\\Api\\AnnouncementTest' => $baseDir . '/tests/Feature/Api/AnnouncementTest.php',
+    'Tests\\Feature\\Api\\ProfileTest' => $baseDir . '/tests/Feature/Api/ProfileTest.php',
     'Tests\\TestCase' => $baseDir . '/tests/TestCase.php',
     'Tests\\Unit\\ExampleTest' => $baseDir . '/tests/Unit/ExampleTest.php',
     'TheSeer\\Tokenizer\\Exception' => $vendorDir . '/theseer/tokenizer/src/Exception.php',

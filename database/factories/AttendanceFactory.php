@@ -27,7 +27,7 @@ class AttendanceFactory extends Factory
             'clock_type' => rand(0, 1),
             'location_id' => Location::all()->random(1)->first()->id,
             'location_name' => 'Test Lokasi',
-            'image' => '/storage/private/attendance/zgKeuF8w18FdLP5KosT9SlEOgWuwhbMHLo6A5PNs.png',
+            'image' => 'private/attendance/zgKeuF8w18FdLP5KosT9SlEOgWuwhbMHLo6A5PNs.png',
             'description' => $this->faker->words(3, true),
             'reason' => $this->faker->words(3, true),
             'type' => rand(0, 1),

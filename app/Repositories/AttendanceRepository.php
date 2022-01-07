@@ -4,13 +4,16 @@ namespace App\Repositories;
 
 use App\Enums\AttendanceType;
 use App\Enums\ClockType;
+use App\Enums\SexType;
 use App\Models\Attendance;
+use App\Models\Location;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
 use Storage;
@@ -115,7 +118,9 @@ class AttendanceRepository extends BaseRepository
     {
         $userTable = with(new User)->getTable();
         $attendancesTable = with(new Attendance)->getTable();
-        $model = Attendance::select('attendances.*', 'users.nama as user_nama', 'users.nik as nik')
+        $locationTable = with(new Location)->getTable();
+        $model = Attendance::select('attendances.*', $userTable . '.nama as user_nama', $userTable . '.nik as nik', $userTable . '.image as user_image', $userTable . '.sex')
+
             ->join($userTable, $userTable . '.id', '=', $attendancesTable . '.user_id');
 
         return $model;
@@ -164,11 +169,28 @@ class AttendanceRepository extends BaseRepository
             ->get();
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
-        $sheet->setCellValue('A1', 'Hello World !');
 
-        $sheet = $this->createExcelHeaderCell($sheet);
 
+        $this->createExcelHeaderCell($sheet);
+        $row = 5;
         foreach ($attendances as $attendance) {
+            $defaultImage = 'public/images/avatar-m.png';
+            if (SexType::getKey($attendance->sex) == 'FEMALE') {
+                $defaultImage = 'public/images/avatar-f.png';
+            }
+            $this->createExcelImageCell($sheet, $attendance->user_image ? $attendance->user_image : $defaultImage, 'A' . $row);
+            $sheet->getRowDimension($row)->setRowHeight(50);
+            $sheet->setCellValue('B' . $row, $attendance->nik);
+            $sheet->setCellValue('C' . $row, $attendance->user_nama);
+            $sheet->setCellValue('G' . $row, $attendance->check_clock);
+            $sheet->setCellValue('H' . $row, $attendance->clock_type->key);
+            $sheet->setCellValue('I' . $row, $attendance->type->key);
+            $sheet->setCellValue('J' . $row, $attendance->description);
+            $this->createExcelImageCell($sheet, $attendance->getRawOriginal('image'), 'K' . $row);
+            $sheet->setCellValue('L' . $row, $attendance->location_name);
+            $sheet->setCellValue('M' . $row, $attendance->latitude . ',' . $attendance->longtitude);
+
+            $row++;
         }
 
         $writer = new Xls($spreadsheet);
@@ -183,8 +205,39 @@ class AttendanceRepository extends BaseRepository
         return $response;
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param Worksheet $sheet Worksheet Instance
+     * @param String $image Path to image from storage path
+     * @param String $coordinate Excel Coordinate ex: A1 | B2 | C3
+     * @return void
+     */
+    private function createExcelImageCell(
+        Worksheet $sheet,
+        String $image,
+        String $coordinate
+    ) {
+        $drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
+        $drawing->setPath(Storage::path($image));
+        $drawing->setCoordinates($coordinate);
+        $drawing->setWidthAndHeight(50, 50);
+        $drawing->setOffsetX(5);
+        $drawing->setOffsetY(5);
+        $drawing->setWorksheet($sheet);
+    }
+
     private function createExcelHeaderCell(Worksheet $sheet)
     {
+
+        $sheet->mergeCells('B1:M1');
+        $sheet->setCellValue('B1', 'Attendance Report - Details');
+        $sheet->getStyle('B1')->applyFromArray([
+            'font' => [
+                'bold' => true,
+                'size' => 16,
+            ],
+        ]);
         $sheet->mergeCells('A3:A4');
         $sheet->setCellValue('A3', 'Photo');
 
@@ -194,17 +247,41 @@ class AttendanceRepository extends BaseRepository
         $sheet->mergeCells('C3:C4');
         $sheet->setCellValue('C3', 'NAMA');
 
-        $sheet->mergeCells('D3:E3');
-        $sheet->setCellValue('D3', 'Jadwal Detail');
-        $sheet->setCellValue('D4', 'Dutty On');
-        $sheet->setCellValue('E4', 'Dutty Off');
+        $sheet->mergeCells('D3:D4');
+        $sheet->setCellValue('D3', 'Kode Jadwal');
 
-        $sheet->mergeCells('F3:G3');
-        $sheet->setCellValue('F3', 'Aktual Detail');
-        $sheet->setCellValue('F4', 'Datetime');
-        $sheet->setCellValue('G4', 'Tipe Clock');
+        $sheet->mergeCells('E3:F3');
+        $sheet->setCellValue('E3', 'Jadwal Detail');
+        $sheet->setCellValue('E4', 'Dutty On');
+        $sheet->setCellValue('F4', 'Dutty Off');
+
+        $sheet->mergeCells('G3:H3');
+        $sheet->setCellValue('G3', 'Aktual Detail');
+        $sheet->setCellValue('G4', 'Datetime');
+        $sheet->setCellValue('H4', 'Tipe Clock');
 
         $sheet->mergeCells('I3:I4');
         $sheet->setCellValue('I3', 'Tipe Attendance');
+
+        $sheet->mergeCells('J3:J4');
+        $sheet->setCellValue('J3', 'Keterangan');
+
+        $sheet->mergeCells('K3:K4');
+        $sheet->setCellValue('K3', 'Photo Capture');
+
+        $sheet->mergeCells('L3:L4');
+        $sheet->setCellValue('L3', 'Lokasi');
+
+        $sheet->mergeCells('M3:M4');
+        $sheet->setCellValue('M3', 'Koordinat');
+
+        $sheet->getStyle('A3:M4')->applyFromArray([
+            'font' => [
+                'bold' => true,
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+            ],
+        ]);
     }
 }
