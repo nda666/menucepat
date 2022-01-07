@@ -489,6 +489,16 @@ return [
                     'location' => 'vendor/datatables/dataTables.bootstrap4.min.js',
                 ],
                 [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'vendor/datatables/dataTables.fixedColumns.min.js',
+                ],
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => 'vendor/datatables/fixedColumns.bootstrap4.min.css',
+                ],
+                [
                     'type' => 'css',
                     'asset' => true,
                     'location' => 'vendor/datatables/dataTables.bootstrap4.min.css',

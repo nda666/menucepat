@@ -59,6 +59,7 @@ Route::middleware('auth:admin')->group(function () {
     Route::resource('announcement', AnnouncementController::class);
 
     Route::get('/attendance/table', [AttendanceController::class, 'table'])->name('attendance.table');
+    Route::get('/attendance/excel', [AttendanceController::class, 'excel'])->name('attendance.excel');
     Route::resource('attendance', AttendanceController::class);
 
     Route::get('/setting/table', [SettingController::class, 'table'])->name('setting.table');

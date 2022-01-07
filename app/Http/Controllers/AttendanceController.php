@@ -33,6 +33,11 @@ class AttendanceController extends Controller
         return response()->json($this->attendanceRepo->paginate($request));
     }
 
+    public function excel(Request $request)
+    {
+        return $this->attendanceRepo->makeExcel($request)->send();
+    }
+
     /**
      * Store Attendance
      *
