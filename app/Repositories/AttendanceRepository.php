@@ -218,13 +218,15 @@ class AttendanceRepository extends BaseRepository
         String $image,
         String $coordinate
     ) {
-        $drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
-        $drawing->setPath(Storage::path($image));
-        $drawing->setCoordinates($coordinate);
-        $drawing->setWidthAndHeight(50, 50);
-        $drawing->setOffsetX(5);
-        $drawing->setOffsetY(5);
-        $drawing->setWorksheet($sheet);
+        if (Storage::exists($image)) {
+            $drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
+            $drawing->setPath(Storage::path($image));
+            $drawing->setCoordinates($coordinate);
+            $drawing->setWidthAndHeight(50, 50);
+            $drawing->setOffsetX(5);
+            $drawing->setOffsetY(5);
+            $drawing->setWorksheet($sheet);
+        }
     }
 
     private function createExcelHeaderCell(Worksheet $sheet)
