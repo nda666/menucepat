@@ -119,7 +119,7 @@ class AttendanceRepository extends BaseRepository
         $userTable = with(new User)->getTable();
         $attendancesTable = with(new Attendance)->getTable();
         $locationTable = with(new Location)->getTable();
-        $model = Attendance::select('attendances.*', $userTable . '.nama as user_nama', $userTable . '.nik as nik', $userTable . '.image as user_image', $userTable . '.sex')
+        $model = Attendance::select('attendances.*', $userTable . '.nama as user_nama', $userTable . '.nik as nik', $userTable . '.avatar as user_image', $userTable . '.sex')
 
             ->join($userTable, $userTable . '.id', '=', $attendancesTable . '.user_id');
 
