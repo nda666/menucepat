@@ -174,7 +174,6 @@ class AttendanceRepository extends BaseRepository
         $this->createExcelHeaderCell($sheet);
         $row = 5;
         foreach ($attendances as $attendance) {
-            dd(Storage::url($attendance->user_image));
             $defaultImage = 'public/images/avatar-m.png';
             if (SexType::getKey($attendance->sex) == 'FEMALE') {
                 $defaultImage = 'public/images/avatar-f.png';
@@ -219,13 +218,15 @@ class AttendanceRepository extends BaseRepository
         $image,
         String $coordinate
     ) {
-        $drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
-        $drawing->setPath(Storage::drive('local')->path($image));
-        $drawing->setCoordinates($coordinate);
-        $drawing->setWidthAndHeight(50, 50);
-        $drawing->setOffsetX(5);
-        $drawing->setOffsetY(5);
-        $drawing->setWorksheet($sheet);
+        if (Storage::exists($image)) {
+            $drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
+            $drawing->setPath(Storage::path($image));
+            $drawing->setCoordinates($coordinate);
+            $drawing->setWidthAndHeight(50, 50);
+            $drawing->setOffsetX(5);
+            $drawing->setOffsetY(5);
+            $drawing->setWorksheet($sheet);
+        }
     }
 
     private function createExcelHeaderCell(Worksheet $sheet)
