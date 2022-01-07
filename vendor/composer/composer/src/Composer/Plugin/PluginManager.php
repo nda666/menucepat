@@ -252,9 +252,10 @@ class PluginManager
         $classLoader->register(false);
 
         foreach ($map['files'] as $fileIdentifier => $file) {
-            // exclude laminas/laminas-zendframework-bridge:src/autoload.php in versions <1.4.1 as it was broken on fresh installs
-            // see https://github.com/composer/composer/issues/10349 - this hack can be removed once <1.4.1 releases stop being installed
-            if ($fileIdentifier === '7e9bd612cc444b3eed788ebbe46263a0' && null !== $localRepo->findPackage('laminas/laminas-zendframework-bridge', '<1.4.1')) {
+            // exclude laminas/laminas-zendframework-bridge:src/autoload.php as it breaks Composer in some conditions
+            // see https://github.com/composer/composer/issues/10349 and https://github.com/composer/composer/issues/10401
+            // this hack can be removed once this deprecated package stop being installed
+            if ($fileIdentifier === '7e9bd612cc444b3eed788ebbe46263a0') {
                 continue;
             }
             \Composer\Autoload\composerRequire($fileIdentifier, $file);
@@ -704,7 +705,7 @@ class PluginManager
 
                 $this->io->writeError('<warning>'.$package.($isGlobalPlugin ? ' (installed globally)' : '').' contains a Composer plugin which is currently not in your allow-plugins config. See https://getcomposer.org/allow-plugins</warning>');
                 while (true) {
-                    switch ($answer = $this->io->ask('<warning>Do you trust "'.$package.'" to execute code and wish to enable it now? (writes "allow-plugins" to composer.json) [y,n,d,?]</warning> ', '?')) {
+                    switch ($answer = $this->io->ask('Do you trust "<info>'.$package.'</info>" to execute code and wish to enable it now? (writes "allow-plugins" to composer.json) [<comment>y,n,d,?</comment>] ', '?')) {
                         case 'y':
                         case 'n':
                         case 'd':
