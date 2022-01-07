@@ -76,6 +76,16 @@ class UserRepository extends BaseRepository
         $token = Uuid::uuid4();
         $user->token = hash('sha256', $token);
         $user->device_id = $request->post('device_id');
+
+        if ($request->file('avatar')) {
+            $avatar = $request->file('avatar')->store('public/avatars');
+
+            if ($user->avatar && Storage::exists($user->avatar)) {
+                Storage::delete($user->avatar);
+            }
+            $user->avatar = $avatar;
+        }
+
         $user->save();
 
         return $user;
@@ -110,6 +120,14 @@ class UserRepository extends BaseRepository
         $user->blood = $request->post('blood');
         $user->nik = $request->post('nik');
         $user->device_id = $request->post('device_id');
+        if ($request->file('avatar')) {
+            $avatar = $request->file('avatar')->store('public/avatars');
+
+            if ($user->avatar && Storage::exists($user->avatar)) {
+                Storage::delete($user->avatar);
+            }
+            $user->avatar = $avatar;
+        }
         $user->save();
         return $user;
     }
@@ -132,7 +150,7 @@ class UserRepository extends BaseRepository
             if ($user->avatar && Storage::exists($user->avatar)) {
                 Storage::delete($user->avatar);
             }
-            $user->avatar = Storage::url($avatar);
+            $user->avatar = $avatar;
         }
 
         if ($formRequest->post('nama')) {

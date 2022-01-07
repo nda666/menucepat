@@ -174,6 +174,7 @@ class AttendanceRepository extends BaseRepository
         $this->createExcelHeaderCell($sheet);
         $row = 5;
         foreach ($attendances as $attendance) {
+            dd(Storage::url($attendance->user_image));
             $defaultImage = 'public/images/avatar-m.png';
             if (SexType::getKey($attendance->sex) == 'FEMALE') {
                 $defaultImage = 'public/images/avatar-f.png';
@@ -209,24 +210,22 @@ class AttendanceRepository extends BaseRepository
      * Undocumented function
      *
      * @param Worksheet $sheet Worksheet Instance
-     * @param String $image Path to image from storage path
+     * @param mixed $image Path to image from storage path
      * @param String $coordinate Excel Coordinate ex: A1 | B2 | C3
      * @return void
      */
     private function createExcelImageCell(
         Worksheet $sheet,
-        String $image,
+        $image,
         String $coordinate
     ) {
-        if (Storage::exists($image)) {
-            $drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
-            $drawing->setPath(Storage::path($image));
-            $drawing->setCoordinates($coordinate);
-            $drawing->setWidthAndHeight(50, 50);
-            $drawing->setOffsetX(5);
-            $drawing->setOffsetY(5);
-            $drawing->setWorksheet($sheet);
-        }
+        $drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
+        $drawing->setPath(Storage::drive('local')->path($image));
+        $drawing->setCoordinates($coordinate);
+        $drawing->setWidthAndHeight(50, 50);
+        $drawing->setOffsetX(5);
+        $drawing->setOffsetY(5);
+        $drawing->setWorksheet($sheet);
     }
 
     private function createExcelHeaderCell(Worksheet $sheet)
