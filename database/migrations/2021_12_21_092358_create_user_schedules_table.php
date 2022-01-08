@@ -13,7 +13,7 @@ class CreateUserSchedulesTable extends Migration
      */
     public function up()
     {
-        Schema::create('user_schedules', function (Blueprint $table) {
+        Schema::create('schedules', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('user_id')->unsigned();
             $table->string('code');
@@ -30,6 +30,6 @@ class CreateUserSchedulesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_schedules');
+        Schema::dropIfExists('schedules');
     }
 }

@@ -8,6 +8,7 @@ use App\Http\Controllers\FamilyController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ScheduleController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -57,6 +58,9 @@ Route::middleware('auth:admin')->group(function () {
 
     Route::get('/announcement/table', [AnnouncementController::class, 'table'])->name('announcement.table');
     Route::resource('announcement', AnnouncementController::class);
+
+    Route::get('/schedule/table', [ScheduleController::class, 'table'])->name('schedule.table');
+    Route::resource('schedule', ScheduleController::class);
 
     Route::get('/attendance/table', [AttendanceController::class, 'table'])->name('attendance.table');
     Route::get('/attendance/excel', [AttendanceController::class, 'excel'])->name('attendance.excel');
