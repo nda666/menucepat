@@ -1,16 +1,16 @@
 <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalCreateUserSchedule">
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalCreateCchedule">
   Tambah
 </button>
 
 <!-- Modal -->
-<div class="modal fade" id="modalCreateUserSchedule" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+<div class="modal fade" id="modalCreateCchedule" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
   <div class="modal-dialog" role="document">
 
-    <form id="formCreateUserSchedule">
+    <form id="formCreateCchedule">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Tambah UserSchedule</h5>
+          <h5 class="modal-title">Tambah Cchedule</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -70,19 +70,19 @@
 
 
       $('input[name="_token"]').val('{{ csrf_token() }}');
-      $('#modalCreateUserSchedule').on('hide.bs.modal', function() {
-        $('#modalCreateUserSchedule :input').val('').trigger('change');
-        $('#modalCreateUserSchedule select').val('').trigger('change');
-        $('#modalCreateUserSchedule input[name="_token"]').val('{{ csrf_token() }}').trigger(
+      $('#modalCreateCchedule').on('hide.bs.modal', function() {
+        $('#modalCreateCchedule :input').val('').trigger('change');
+        $('#modalCreateCchedule select').val('').trigger('change');
+        $('#modalCreateCchedule input[name="_token"]').val('{{ csrf_token() }}').trigger(
           'change');
       });
-      $('#modalCreateUserSchedule').on('submit', 'form', function(e) {
+      $('#modalCreateCchedule').on('submit', 'form', function(e) {
         e.preventDefault();
-        $('#formCreateUserSchedule').removeClass('was-validated');
-        $(`#formCreateUserSchedule .invalid-feedback`).remove();
-        $(`#formCreateUserSchedule .is-invalid`).removeClass('is-invalid');
+        $('#formCreateCchedule').removeClass('was-validated');
+        $(`#formCreateCchedule .invalid-feedback`).remove();
+        $(`#formCreateCchedule .is-invalid`).removeClass('is-invalid');
         const data = $(this).serializeArray();
-        const id = $('#formCreateUserSchedule [name="id"]').val();
+        const id = $('#formCreateCchedule [name="id"]').val();
         const form = new FormData($(this)[0]);
         id && form.append('_method', 'PUT');
         let date = $('#dateRange').val();
@@ -99,16 +99,16 @@
           processData: false,
           contentType: false,
           success: function(response) {
-            toastr.success('UserSchedule berhasil disimpan');
+            toastr.success('Cchedule berhasil disimpan');
             @if ($gridId)
               window['{{ $gridId }}'].ajax.reload(null, false);
             @endif
-            $('#modalCreateUserSchedule input, #modalCreateUserSchedule textarea')
+            $('#modalCreateCchedule input, #modalCreateCchedule textarea')
               .val('').trigger('change');
-            $('#modalCreateUserSchedule select').val('').trigger('change');
+            $('#modalCreateCchedule select').val('').trigger('change');
             $('input[name="_token"]').val('{{ csrf_token() }}');
 
-            id && $('#modalCreateUserSchedule').modal('hide');
+            id && $('#modalCreateCchedule').modal('hide');
           },
           error: function(xhr) {
             if (xhr?.responseJSON?.message) {
@@ -117,9 +117,9 @@
                 for (error in xhr.responseJSON.errors) {
 
                   const name = xhr.responseJSON.errors[error];
-                  $(`#modalCreateUserSchedule [name="${error}"]`).addClass(
+                  $(`#modalCreateCchedule [name="${error}"]`).addClass(
                     'is-invalid')
-                  $(`#modalCreateUserSchedule [name="${error}"]`).parent().append(
+                  $(`#modalCreateCchedule [name="${error}"]`).parent().append(
                     `<div class="invalid-feedback">${ xhr.responseJSON.errors[error][0]}</div>`
                   )
                 }
