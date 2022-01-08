@@ -1,10 +1,10 @@
 <?php
 
-namespace App\View\Components\UserSchedule;
+namespace App\View\Components\Schedule;
 
 use Illuminate\View\Component;
 
-class UserScheduleView extends Component
+class ScheduleView extends Component
 {
     /**
      * Create a new component instance.
@@ -23,6 +23,6 @@ class UserScheduleView extends Component
      */
     public function render()
     {
-        return view('components.user-schedule.user-schedule-view');
+        return view('components.schedule.schedule-view');
     }
 }

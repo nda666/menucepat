@@ -1,4 +1,4 @@
-<form id="user-scheduleSearchForm">
+<form id="scheduleSearchForm">
   <div class="row">
     <div class="col-md-6">
       <x-input-horizontal label="Judul" id="filterTitle" name="filterTitle" autocomplete="off"
@@ -35,7 +35,7 @@
 @push('js')
   <script>
     (function() {
-      $('#user-scheduleSearchForm').submit(function(e) {
+      $('#scheduleSearchForm').submit(function(e) {
         e.preventDefault();
         @if ($onSubmit) {{ $onSubmit }} @endif
       })

@@ -2,7 +2,7 @@
   <h5>Filter Pencarian</h5>
 
 
-  <x-user-schedule.user-schedule-filter id="{{ $filterFormId }}" on-submit="window.refreshTable()" />
+  <x-schedule.schedule-filter id="{{ $filterFormId }}" on-submit="window.refreshTable()" />
 </div>
 <table width="100%" class="table table-striped table-bordered table-sm" id="{{ $id }}" {{ $attributes }}>
   <thead>
@@ -42,7 +42,7 @@
         scrollX: true,
         order: [1, 'desc'],
         ajax: {
-          url: '{{ route('user-schedule.table') }}',
+          url: '{{ route('schedule.table') }}',
           data: function(d) {
             return $.extend({}, d, {
               nama: $('#filterNama').val(),

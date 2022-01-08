@@ -92,8 +92,8 @@
         form.append('start_date', separateDate[0]);
         form.append('end_date', separateDate[1]);
         $.ajax({
-          url: id ? "{{ url('user-schedule/') }}/" + id :
-          "{{ route('user-schedule.store') }}", // if id exist use update URL
+          url: id ? "{{ url('schedule/') }}/" + id :
+          "{{ route('schedule.store') }}", // if id exist use update URL
           method: 'POST', // if id exist use PUT
           data: form,
           processData: false,

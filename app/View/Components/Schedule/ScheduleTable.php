@@ -1,10 +1,10 @@
 <?php
 
-namespace App\View\Components\UserSchedule;
+namespace App\View\Components\Schedule;
 
 use Illuminate\View\Component;
 
-class UserScheduleTable extends Component
+class ScheduleTable extends Component
 {
     public $id;
     public $filterFormId;
@@ -26,6 +26,6 @@ class UserScheduleTable extends Component
      */
     public function render()
     {
-        return view('components.user-schedule.user-schedule-table');
+        return view('components.schedule.schedule-table');
     }
 }

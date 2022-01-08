@@ -1,10 +1,10 @@
 <?php
 
-namespace App\View\Components\UserSchedule;
+namespace App\View\Components\Schedule;
 
 use Illuminate\View\Component;
 
-class UserScheduleFilter extends Component
+class ScheduleFilter extends Component
 {
     public $id;
 
@@ -14,7 +14,7 @@ class UserScheduleFilter extends Component
      *
      * @return void
      */
-    public function __construct($id = 'user-schedule-filter', $onSubmit = null)
+    public function __construct($id = 'schedule-filter', $onSubmit = null)
     {
         $this->id = $id;
         $this->onSubmit = $onSubmit;
@@ -27,6 +27,6 @@ class UserScheduleFilter extends Component
      */
     public function render()
     {
-        return view('components.user-schedule.user-schedule-filter');
+        return view('components.schedule.schedule-filter');
     }
 }

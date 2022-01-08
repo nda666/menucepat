@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\UserScheduleRequest;
+use App\Http\Requests\ScheduleRequest;
 use App\Http\Resources\BaseResource;
-use App\Repositories\UserScheduleRepository;
+use App\Repositories\ScheduleRepository;
 use Illuminate\Http\Request;
 
-class UserScheduleController extends Controller
+class ScheduleController extends Controller
 {
-    private $userScheduleRepo;
+    private $scheduleRepo;
 
-    public function __construct(UserScheduleRepository $userScheduleRepo)
+    public function __construct(ScheduleRepository $scheduleRepo)
     {
-        $this->userScheduleRepo = $userScheduleRepo;
+        $this->scheduleRepo = $scheduleRepo;
     }
 
     /**
@@ -23,12 +23,12 @@ class UserScheduleController extends Controller
      */
     public function index()
     {
-        return view('user-schedule.index');
+        return view('schedule.index');
     }
 
     public function table(Request $request)
     {
-        return response()->json($this->userScheduleRepo->paginate($request));
+        return response()->json($this->scheduleRepo->paginate($request));
     }
 
     /**
@@ -36,9 +36,9 @@ class UserScheduleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(UserScheduleRequest $request)
+    public function create(ScheduleRequest $request)
     {
-        $this->userScheduleRepo->create($request);
+        $this->scheduleRepo->create($request);
     }
 
     /**
@@ -47,10 +47,10 @@ class UserScheduleController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(UserScheduleRequest $request)
+    public function store(ScheduleRequest $request)
     {
-        $userSchedule = $this->userScheduleRepo->create($request);
-        return new BaseResource($userSchedule);
+        $schedule = $this->scheduleRepo->create($request);
+        return new BaseResource($schedule);
     }
 
     /**
@@ -61,7 +61,7 @@ class UserScheduleController extends Controller
      */
     public function show($id)
     {
-        return response()->json($this->userScheduleRepo->find($id));
+        return response()->json($this->scheduleRepo->find($id));
     }
 
     /**
@@ -70,9 +70,9 @@ class UserScheduleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(UserScheduleRequest $request, $id)
+    public function edit(ScheduleRequest $request, $id)
     {
-        $this->userScheduleRepo->update($request, $id);
+        $this->scheduleRepo->update($request, $id);
     }
 
     /**
@@ -82,10 +82,10 @@ class UserScheduleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UserScheduleRequest $request, $id)
+    public function update(ScheduleRequest $request, $id)
     {
-        $userSchedule = $this->userScheduleRepo->update($request, $id);
-        return new BaseResource($userSchedule);
+        $schedule = $this->scheduleRepo->update($request, $id);
+        return new BaseResource($schedule);
     }
 
     /**
@@ -96,6 +96,6 @@ class UserScheduleController extends Controller
      */
     public function destroy($id)
     {
-        return $this->userScheduleRepo->delete($id);
+        return $this->scheduleRepo->delete($id);
     }
 }

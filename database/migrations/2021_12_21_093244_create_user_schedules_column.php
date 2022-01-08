@@ -14,8 +14,8 @@ class CreateUserSchedulesColumn extends Migration
     public function up()
     {
         Schema::table('attendances', function (Blueprint $table) {
-            $table->bigInteger('user_schedule_id')->unsigned()->nullable()->after('id');
-            $table->foreign('user_schedule_id')->references('id')->on('user_schedules')
+            $table->bigInteger('schedule_id')->unsigned()->nullable()->after('id');
+            $table->foreign('schedule_id')->references('id')->on('schedules')
                 ->constrained()
                 ->cascadeOnUpdate()
                 ->nullOnDelete();
@@ -30,8 +30,8 @@ class CreateUserSchedulesColumn extends Migration
     public function down()
     {
         Schema::table('attendances', function (Blueprint $table) {
-            $table->dropForeign(['user_schedule_id']);
-            $table->dropColumn('user_schedule_id');
+            $table->dropForeign(['schedule_id']);
+            $table->dropColumn('schedule_id');
         });
     }
 }

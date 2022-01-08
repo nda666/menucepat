@@ -1,11 +1,11 @@
 <?php
 
-namespace App\View\Components\UserSchedule;
+namespace App\View\Components\Schedule;
 
 use App\Enums\SexType;
 use Illuminate\View\Component;
 
-class UserScheduleForm extends Component
+class ScheduleForm extends Component
 {
 
     public $gridId = null;
@@ -29,6 +29,6 @@ class UserScheduleForm extends Component
      */
     public function render()
     {
-        return view('components.user-schedule.user-schedule-form');
+        return view('components.schedule.schedule-form');
     }
 }
