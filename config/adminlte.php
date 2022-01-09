@@ -262,12 +262,20 @@ return [
             'label_color' => 'success',
         ],
         [
+            'text'        => 'Jadwal',
+            'url'         => 'schedule',
+            'icon'        => 'fas fa-fw fa-calendar',
+            // 'label'       => 4,
+            'label_color' => 'success',
+        ],
+        [
             'text'        => 'Lokasi',
             'url'         => 'location',
             'icon'        => 'fas fa-fw fa-map-marker-alt',
             // 'label'       => 4,
             'label_color' => 'success',
         ],
+
         ['header' => 'laporan'],
         [
             'text'        => 'Absensi Pegawai',

@@ -30,6 +30,7 @@ class CreateUserSchedulesColumn extends Migration
     public function down()
     {
         Schema::table('attendances', function (Blueprint $table) {
+
             $table->dropForeign(['schedule_id']);
             $table->dropColumn('schedule_id');
         });

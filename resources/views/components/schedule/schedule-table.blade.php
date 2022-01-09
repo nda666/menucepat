@@ -9,11 +9,10 @@
     <tr>
       <th>Aksi</th>
       <th>ID</th>
-      <th>Judul</th>
-      <th>Deskripsi</th>
-      <th>Tanggal Mulai</th>
-      <th>Tanggal Berakhir</th>
-      <th>Attachment</th>
+      <th>Kode Jadwal</th>
+      <th>Pegawai</th>
+      <th>Duty On</th>
+      <th>Duty Off</th>
     </tr>
   </thead>
   <tbody></tbody>
@@ -21,17 +20,16 @@
 
 
 @push('css')
-  <style>
-    #<?="$id "?>th,
-    #<?="$id "?>td {
-      white-space: nowrap;
-    }
-
-  </style>
+<style>
+  #<?="$id "?>th,
+  #<?="$id "?>td {
+    white-space: nowrap;
+  }
+</style>
 @endpush
 @push('js')
-  <script>
-    (function() {
+<script>
+  (function() {
       function refreshTable() {
         window['{{ $id }}'].ajax.reload();
       }
@@ -80,33 +78,26 @@
             }
           },
           {
-            name: 'user_schedules.id',
+            name: 'schedules.id',
             data: 'id'
           },
           {
-            name: 'user_schedules.title',
-            data: 'title'
+            name: 'schedules.code',
+            data: 'code'
           },
           {
-            name: 'user_schedules.description',
-            data: 'description'
+            name: 'user_nama',
+            data: 'user_nama'
           },
           {
-            name: 'user_schedules.start_date',
-            data: 'start_date'
+            name: 'schedules.duty_on',
+            data: 'duty_on'
           },
           {
-            name: 'user_schedules.end_date',
-            data: 'end_date'
+            name: 'schedules.duty_off',
+            data: 'duty_off'
           },
-          {
-            name: 'user_schedules.attachment',
-            data: 'attachment',
-            sortable: false,
-            render: function(link) {
-              return link ? `<a href="${link}" target="_blank">Attachment</a>` : '';
-            }
-          },
+         
 
         ]
       });
@@ -114,5 +105,5 @@
 
 
     })()
-  </script>
+</script>
 @endpush

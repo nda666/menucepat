@@ -18,25 +18,13 @@
         <div class="modal-body">
           {{ csrf_field() }}
           <input type="hidden" name="id" autocomplete="off">
-          <x-adminlte-input id="dateRange" required name="date" autocomplete="off"
-            placeholder="Tanggal Mulai - Tanggal Selesai" label="Tanggal Mulai - Tanggal Selesai" />
-          <x-adminlte-input name="title" label="Judul" required autocomplete="off" placeholder="Judul" />
-          <x-adminlte-textarea name="description" label="Deskripsi" required autocomplete="off"
-            placeholder="Deskripsi" />
-
-          {{-- <div class="row">
-                        <div class="col-md-6">
-                            <x-date-picker :id="'start_date'" name="start_date" required autocomplete="off"
-                                placeholder="Tanggal Mulai" label="Tanggal Mulai" />
-                        </div>
-                        <div class="col-md-6">
-                            <x-date-picker :id="'end_date'" name="end_date" required autocomplete="off"
-                                placeholder="Tanggal Berakhir" label="Tanggal Berakhir" />
-                        </div>
-                    </div> --}}
-
-          <x-adminlte-input name="attachment" type="file" label="Attachment" autocomplete="off"
-            placeholder="Attachment" />
+          <x-pegawai-select2 id="selectUser" name="user_id" required />
+          <x-adminlte-input id="codeInput" required name="code" autocomplete="off" placeholder="Kode Jadwal"
+            label="Kode Jadwal" />
+          <x-adminlte-input id="dateRangeStart" required name="duty_on" autocomplete="off"
+            placeholder="Jadwal Mulai - Tanggal & Jam" label="Jadwal Mulai - Tanggal & Jam" />
+          <x-adminlte-input id="dateRangeEnd" required name="duty_off" autocomplete="off"
+            placeholder="Jadwal Selesai - Tanggal & Jam" label="Jadwal Selesai - Tanggal & Jam" />
 
         </div>
         <div class="modal-footer">
@@ -50,17 +38,57 @@
 
 @push('js')
 
-  <script>
-    (function() {
+<script>
+  (function() {
 
 
-      $('#dateRange').daterangepicker({
-
+      $('#dateRangeStart').daterangepicker({
+        singleDatePicker: true,
+    showDropdowns: true,
         timePicker: true,
         timePicker24Hour: true,
+        autoApply: true,
         drops: 'top',
-        startDate: moment().startOf('hour'),
-        endDate: moment().startOf('hour').add(32, 'hour'),
+        startDate: moment().set({hour:8,minute:0,second:0,millisecond:0}),
+        endDate: moment().startOf('hour').add(24, 'hour'),
+        locale: {
+          format: 'YYYY-MM-DD HH:mm'
+        }
+      }).on('show.bs.modal', function(event) {
+        event.stopPropagation();
+      }).on('change', function(event){
+        console.log('as')
+        $('#dateRangeEnd').data('daterangepicker').remove()
+        $('#dateRangeEnd').daterangepicker({
+        autoApply: true,
+        singleDatePicker: true,
+        showDropdowns: true,
+        timePicker: true,
+        minDate: $('#dateRangeStart').val(),
+        maxDate: moment($('#dateRangeStart').val()).add(18, 'hour'),
+        timePicker24Hour: true,
+        drops: 'top',
+        startDate: moment().set({hour:16,minute:0,second:0,millisecond:0}),
+        endDate: moment().startOf('hour').add(18, 'hour'),
+        locale: {
+          format: 'YYYY-MM-DD HH:mm'
+        }
+      }).on('show.bs.modal', function(event) {
+        event.stopPropagation();
+      });
+      });
+
+      $('#dateRangeEnd').daterangepicker({
+        autoApply: true,
+        singleDatePicker: true,
+        showDropdowns: true,
+        timePicker: true,
+        minDate: $('#dateRangeStart').val(),
+        maxDate: moment($('#dateRangeStart').val()).add(18, 'hour'),
+        timePicker24Hour: true,
+        drops: 'top',
+        startDate: moment().set({hour:16,minute:0,second:0,millisecond:0}),
+        endDate: moment().startOf('hour').add(18, 'hour'),
         locale: {
           format: 'YYYY-MM-DD HH:mm'
         }
@@ -85,12 +113,6 @@
         const id = $('#formCreateSchedule [name="id"]').val();
         const form = new FormData($(this)[0]);
         id && form.append('_method', 'PUT');
-        let date = $('#dateRange').val();
-        const separateDate = date.split(' - ');
-        // form.remove('date');
-        console.log(form)
-        form.append('start_date', separateDate[0]);
-        form.append('end_date', separateDate[1]);
         $.ajax({
           url: id ? "{{ url('schedule/') }}/" + id :
           "{{ route('schedule.store') }}", // if id exist use update URL
@@ -137,5 +159,5 @@
         })
       })
     })()
-  </script>
+</script>
 @endpush

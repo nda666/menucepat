@@ -48,9 +48,10 @@ class ScheduleRepository extends BaseRepository
 
     public function paginate(Request $request)
     {
-        // $userTable = with(new User)->getTable();
-        // $scheduleTable = with(new Schedule)->getTable();
-        $model = Schedule::select('schedules.*');
+        $userTable = with(new User)->getTable();
+        $scheduleTable = with(new Schedule)->getTable();
+        $model = Schedule::select("${scheduleTable}.*", "{$userTable}.nama as user_nama");
+        $model->join($userTable, "{$userTable}.id", "=", "${scheduleTable}.user_id");
         return DataTables::eloquent($model)
             ->filter(function ($schedule) use ($request) {
                 $this->filter($schedule, $request);
@@ -65,21 +66,10 @@ class ScheduleRepository extends BaseRepository
     public function create(FormRequest $request)
     {
         $schedule = new Schedule();
-        $schedule->title = $request->post('title');
-        $schedule->description = $request->post('description');
-        $schedule->start_date = $request->post('start_date');
-        $schedule->end_date = $request->post('end_date');
-
-        if ($request->file('attachment')) {
-            $attachment = $request->file('attachment')->store('public/attachments');
-
-            if ($schedule->attachment && Storage::exists($schedule->attachment)) {
-                Storage::delete($schedule->attachment);
-            }
-
-            $schedule->attachment = Storage::url($attachment);
-        }
-
+        $schedule->code = $request->post('code');
+        $schedule->user_id = $request->post('user_id');
+        $schedule->duty_on = $request->post('duty_on');
+        $schedule->duty_off = $request->post('duty_off');
         $schedule->save();
 
         return $schedule;
@@ -93,21 +83,10 @@ class ScheduleRepository extends BaseRepository
     public function update(FormRequest $request)
     {
         $schedule = Schedule::findOrFail($request->post('id'));
-        $schedule->title = $request->post('title');
-        $schedule->description = $request->post('description');
-        $schedule->start_date = $request->post('start_date');
-        $schedule->end_date = $request->post('end_date');
-
-        if ($request->file('attachment')) {
-            $attachment = $request->file('attachment')->store('public/attachments');
-
-            if ($schedule->attachment && Storage::exists($schedule->attachment)) {
-                Storage::delete($schedule->attachment);
-            }
-
-            $schedule->attachment = Storage::url($attachment);
-        }
-
+        $schedule->code = $request->post('code');
+        $schedule->user_id = $request->post('user_id');
+        $schedule->duty_on = $request->post('duty_on');
+        $schedule->duty_off = $request->post('duty_off');
         $schedule->save();
 
         return $schedule;
