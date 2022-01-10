@@ -9,15 +9,23 @@ class PegawaiSelect2 extends Component
 {
     public $id;
     public $label;
+    public $name;
+    public $fgroupClass;
+    public $isgroupClass;
+    public $labelClass;
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct($id = '', $label = '')
+    public function __construct($id = '', $name = "user_id", $label = '', $fgroupClass = '', $isgroupClass = '', $labelClass = '')
     {
         $this->id = $id ? $id : Str::createUuidsNormally();
         $this->label = $label ? $label : 'Pegawai';
+        $this->fgroupClass = $fgroupClass;
+        $this->isgroupClass = $isgroupClass;
+        $this->labelClass = $labelClass;
+        $this->name = $name;
     }
 
     /**

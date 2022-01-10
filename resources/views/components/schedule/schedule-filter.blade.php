@@ -1,12 +1,6 @@
 <form id="scheduleSearchForm">
   <div class="row">
-    <div class="col-md-6">
-      <x-input-horizontal label="Judul" id="filterTitle" name="filterTitle" autocomplete="off"
-        placeholder="Cari dari Judul" />
-      <x-input-horizontal label="Deskripsi" id="filterDescription" name="filterDescription" autocomplete="off"
-        placeholder="Cari dari Deskripsi" />
 
-    </div>
     <div class="col-md-6">
       <div class="form-group row">
         <label class=" col-md-3 col-form-label text-md-right">Tgl Mulai</label>
@@ -22,6 +16,15 @@
       </div>
 
 
+
+    </div>
+
+    <div class="col-md-6">
+      <x-pegawai-select2 label="Pegawai" id="filterUserId" name="filterUserId" autocomplete="off"
+        placeholder="Cari dari Pegawai" fgroup-class="col-md-9" label-class="col-md-3 col-form-label text-md-right"
+        igroupClass="col-md-9" />
+      <x-input-horizontal label="Kode" id="filterCode" name="filterCoe" autocomplete="off"
+        placeholder="Cari dari Kode" />
       <div class="form-group row">
         <div class="offset-md-3 col-md-9">
           <button type="submit" class="btn btn-block btn-primary">Cari</button>
