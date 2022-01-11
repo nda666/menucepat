@@ -91,4 +91,20 @@ class ScheduleRepository extends BaseRepository
 
         return $schedule;
     }
+
+    /**
+     * Get Current Schedule
+     *
+     * @param   int  $userId  User id
+     *
+     * @return  \App\Models\Schedule
+     */
+    public function getCurrentSchedule(int $userId)
+    {
+        $schedule = Schedule::whereDate('duty_on', Carbon::now())
+            ->where('user_id', $userId)
+            ->first();
+
+        return $schedule;
+    }
 }

@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Family')
+@section('title', 'Keluarga - ' . env('APP_NAME'))
 
 @section('content_top_nav_left')
 <div class="ml-3 navbar-brand" href="#"><i class="fas fa-fw fa-users "></i> Keluarga</div>

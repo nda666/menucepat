@@ -1,7 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Announcement')
-
+@section('title', 'Pengumuman - ' . env('APP_NAME'))
 
 @section('content_top_nav_left')
 <div class="ml-3 navbar-brand" href="#"><i class="fas fa-fw fa-bullhorn "></i> Pengumuman</div>

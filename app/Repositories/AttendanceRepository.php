@@ -7,6 +7,7 @@ use App\Enums\ClockType;
 use App\Enums\SexType;
 use App\Models\Attendance;
 use App\Models\Location;
+use App\Models\Schedule;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -22,9 +23,12 @@ use Yajra\DataTables\Facades\DataTables;
 
 class AttendanceRepository extends BaseRepository
 {
-    public function __construct(Attendance $model)
+    protected $scheduleRepository;
+
+    public function __construct(Attendance $model, ScheduleRepository $scheduleRepository)
     {
         parent::__construct($model);
+        $this->scheduleRepository = $scheduleRepository;
     }
 
     public function currentAttendance($userId)
@@ -33,38 +37,6 @@ class AttendanceRepository extends BaseRepository
             ->where('clock_in', '<=', Carbon::today()->format('Y-m-d 23:59:59'))
             ->where('clock_in', '>=', Carbon::today()->format('Y-m-d 00:00:00'))
             ->get();
-
-        return $attendance;
-    }
-
-    /**
-     * @param \Illuminate\Foundation\Http\FormRequest $request
-     * @param int $clocktype ClockType Instance
-     * 
-     * @return App/Models/Attendance
-     */
-    public function checkClock(FormRequest $request, int $clockType)
-    {
-        $attendance = new Attendance();
-        $attendance->check_clock = Carbon::now();
-        $attendance->clock_type = $clockType;
-        $attendance->user_id = auth()->user()->id;
-        $attendance->latitude = $request->post('latitude');
-        $attendance->longtitude = $request->post('longtitude');
-        $attendance->location_id = $request->post('type') != AttendanceType::LIVE ? null : $request->post('location_id');
-        $attendance->location_name = $request->post('location_name');
-        $attendance->description = $request->post('description');
-        $attendance->reason = $request->post('reason');
-        $attendance->type = $request->post('type');
-
-        if ($request->file('image')) {
-            $request->file('image')->storeAs('attendance/', $request->file('image')->hashName(), ['disk' => 'attendance']);
-
-            $attendance->image = 'private/attendance/' . $request->file('image')->hashName();
-        }
-
-        $attendance->save();
-        $attendance->refresh();
 
         return $attendance;
     }
@@ -88,6 +60,57 @@ class AttendanceRepository extends BaseRepository
     {
         return $this->checkClock($request, ClockType::OUT);
     }
+
+    /**
+     * @param \Illuminate\Foundation\Http\FormRequest $request
+     * @param int $clocktype ClockType Instance
+     * 
+     * @return App/Models/Attendance
+     */
+    public function checkClock(FormRequest $request, int $clockType)
+    {
+        $schedule = $this->scheduleRepository->getCurrentSchedule(auth()->user()->id);
+        $attendance = new Attendance();
+        if ($schedule) {
+            $attendance->schedule_id = $schedule->id;
+        }
+        $now = Carbon::now();
+        $attendance->check_clock = $now;
+        $attendance->clock_type = $clockType;
+        $attendance->user_id = auth()->user()->id;
+        $attendance->latitude = $request->post('latitude');
+        $attendance->longtitude = $request->post('longtitude');
+        $attendance->location_id = $request->post('type') != AttendanceType::LIVE ? null : $request->post('location_id');
+        $attendance->location_name = $request->post('location_name');
+        $attendance->description = $request->post('description');
+        $attendance->reason = $request->post('reason');
+        $attendance->type = $request->post('type');
+
+        if ($request->file('image')) {
+            $request->file('image')->storeAs('attendance/', $request->file('image')->hashName(), ['disk' => 'attendance']);
+
+            $attendance->image = 'private/attendance/' . $request->file('image')->hashName();
+        }
+
+        $attendance->save();
+        $attendance->refresh();
+
+        $isLate = 0;
+        if ($clockType == ClockType::IN && $request->post('type') == AttendanceType::LIVE) {
+            $isLate = $now->gt($schedule->duty_on) ? 1 : 0;
+        }
+
+        if ($clockType == ClockType::OUT && $request->post('type') == AttendanceType::LIVE) {
+            $isLate = $now->gt($schedule->duty_on) ? 2 : 0;
+        }
+
+        return [
+            'attendance' => $attendance,
+            'message' => $isLate ? 'Absensi berhasil, anda terlambat' : 'Absensi berhasil, anda tidak terlambat'
+        ];
+    }
+
+
 
     public function createFromAdmin(Request $request)
     {

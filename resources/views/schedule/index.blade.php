@@ -1,33 +1,33 @@
 @extends('adminlte::page')
 
-@section('title', 'Schedule')
+@section('title', 'Jadwal - ' . env('APP_NAME'))
 
 
 @section('content_top_nav_left')
-  <div class="ml-3 navbar-brand" href="#"><i class="fas fa-fw fa-bullhorn "></i> Pengumuman</div>
+<div class="ml-3 navbar-brand" href="#"><i class="fas fa-fw fa-calendar "></i> Jadwal</div>
 @endsection
 
 
 @section('content')
-  <section class="pt-3 pb-2">
-    <div class="btn-group" role="group" aria-label="...">
-      <x-schedule.schedule-form grid-id="grid" />
-      <button type="button" id="search" class="btn btn-primary" data-toggle="collapse" data-target="#filterCollapse"
-        aria-expanded="false" aria-controls="filterCollapse">Filter</button>
-    </div>
-  </section>
-  <x-schedule.schedule-view />
-  <div class="card mt-2">
-    <div class="card-body">
-      <div class="card-text">
-        <div class="row">
-          <div class="col-12">
-            <x-schedule.schedule-table id="grid" filter-form-id="filter-form" />
-          </div>
+<section class="pt-3 pb-2">
+  <div class="btn-group" role="group" aria-label="...">
+    <x-schedule.schedule-form grid-id="grid" />
+    <button type="button" id="search" class="btn btn-primary" data-toggle="collapse" data-target="#filterCollapse"
+      aria-expanded="false" aria-controls="filterCollapse">Filter</button>
+  </div>
+</section>
+<x-schedule.schedule-view />
+<div class="card mt-2">
+  <div class="card-body">
+    <div class="card-text">
+      <div class="row">
+        <div class="col-12">
+          <x-schedule.schedule-table id="grid" filter-form-id="filter-form" />
         </div>
       </div>
     </div>
   </div>
+</div>
 @stop
 
 @section('plugins.DatePicker', true)
@@ -39,8 +39,8 @@
 @section('plugins.Toastr', true)
 
 @section('js')
-  <script>
-    (function() {
+<script>
+  (function() {
       function getRowData(action) {
         const dropdownMenu = $(action).closest('.dropdown-menu');
         const tr = $($(dropdownMenu).data('target')).closest('tr');
@@ -164,5 +164,5 @@
       });
 
     })()
-  </script>
+</script>
 @endsection

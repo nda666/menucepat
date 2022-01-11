@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Location')
+@section('title', 'Lokasi - ' . env('APP_NAME'))
 
 @section('content_top_nav_left')
 <div class="ml-3 navbar-brand" href="#"><i class="fas fa-fw fa-map-marker-alt "></i> Lokasi</div>

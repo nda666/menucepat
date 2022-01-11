@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Setting')
+@section('title', 'Setting - ' . env('APP_NAME'))
 
 @section('content_top_nav_left')
 <div class="ml-3 navbar-brand" href="#"><i class="fas fa-fw fa-cog "></i> Setting</div>
