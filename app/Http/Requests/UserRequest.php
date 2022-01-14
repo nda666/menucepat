@@ -30,7 +30,7 @@ class UserRequest extends FormRequest
             'nama' => 'required',
             'email' => 'required|email|unique:users,email,' . $this->post('id') . ',id',
             'password' => $this->post('id')  ? '' :  'required|min:8',
-            'tgl_lahir' => 'required|date_format:d/m/Y',
+            'tgl_lahir' => 'required|date',
             'kota_lahir' => 'required',
             'divisi' => 'required',
             'subdivisi' => 'required',
