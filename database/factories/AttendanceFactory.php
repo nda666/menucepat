@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Location;
+use App\Models\Schedule;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
@@ -19,7 +20,9 @@ class AttendanceFactory extends Factory
         $date = $this->faker->dateTimeBetween('-18 days')->format('Y-m-d');
         $clockIn = $this->faker->dateTimeBetween('2021-01-01 07:00:00', '2021-01-01 08:00:00')->format('H:i:s');
         $clockOut = $this->faker->dateTimeBetween('2021-01-01 17:00:00', '2021-01-01 18:00:00')->format('H:i:s');
+        $schedule = Schedule::all()->random(1)->first();
         return [
+            'schedule_id' => $schedule ? $schedule->id : null,
             'latitude' => $this->faker->latitude(),
             'longtitude' => $this->faker->longitude(),
             'user_id' => User::all()->random(1)->first()->id,

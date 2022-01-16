@@ -142,8 +142,9 @@ class AttendanceRepository extends BaseRepository
         $userTable = with(new User)->getTable();
         $attendancesTable = with(new Attendance)->getTable();
         $locationTable = with(new Location)->getTable();
-        $model = Attendance::select('attendances.*', $userTable . '.nama as user_nama', $userTable . '.nik as nik', $userTable . '.avatar as user_image', $userTable . '.sex')
-
+        $scheduleTable = with(new Schedule)->getTable();
+        $model = Attendance::select('attendances.*', $userTable . '.nama as user_nama', $userTable . '.nik as nik', $userTable . '.avatar as user_image', $userTable . '.sex', "{$scheduleTable}.duty_on", "{$scheduleTable}.duty_off", "{$scheduleTable}.code as schedule_code")
+            ->leftJoin($scheduleTable, $scheduleTable . '.id', '=', $attendancesTable . '.schedule_id')
             ->join($userTable, $userTable . '.id', '=', $attendancesTable . '.user_id');
 
         return $model;
@@ -188,6 +189,7 @@ class AttendanceRepository extends BaseRepository
         $oAttendance = $this->baseAttendance($request);
         $attendances = $this->filterPaginated($oAttendance, $request)
             ->orderBy('users.nama', 'asc')
+            ->orderBy('schedules.duty_on', 'asc')
             ->orderBy('attendances.check_clock', 'asc')
             ->get();
         $spreadsheet = new Spreadsheet();
@@ -205,6 +207,9 @@ class AttendanceRepository extends BaseRepository
             $sheet->getRowDimension($row)->setRowHeight(50);
             $sheet->setCellValue('B' . $row, $attendance->nik);
             $sheet->setCellValue('C' . $row, $attendance->user_nama);
+            $sheet->setCellValue('D' . $row, $attendance->schedule_code);
+            $sheet->setCellValue('E' . $row, $attendance->duty_on);
+            $sheet->setCellValue('F' . $row, $attendance->duty_off);
             $sheet->setCellValue('G' . $row, $attendance->check_clock);
             $sheet->setCellValue('H' . $row, $attendance->clock_type->key);
             $sheet->setCellValue('I' . $row, $attendance->type->key);
@@ -214,6 +219,11 @@ class AttendanceRepository extends BaseRepository
             $sheet->setCellValue('M' . $row, $attendance->latitude . ',' . $attendance->longtitude);
 
             $row++;
+        }
+
+        foreach (range('A', 'M') as $columnID) {
+            $spreadsheet->getActiveSheet()->getColumnDimension($columnID)
+                ->setAutoSize(true);
         }
 
         $writer = new Xls($spreadsheet);

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\ClockInRequest;
 use App\Http\Requests\Api\ClockOutRequest;
+use App\Http\Resources\Api\AttendanceResource;
 use App\Http\Resources\BaseResource;
 use App\Models\Attendance;
 use App\Repositories\AttendanceRepository;
@@ -31,15 +32,19 @@ class AttendanceController extends Controller
     public function clockIn(ClockInRequest $clockInRequest)
     {
         $attendance = $this->attendaceRepo->clockIn($clockInRequest);
-
-        return $attendance ? new BaseResource($attendance) : response()->json(['message' => 'Absensi gagal disimpan'], 501);
+        return $this->checkClockResponse($attendance);
     }
 
     public function clockOut(ClockOutRequest $clockOutRequest)
     {
         $attendance = $this->attendaceRepo->clockOut($clockOutRequest);
+        return $this->checkClockResponse($attendance);
+    }
 
-        return $attendance ? new BaseResource($attendance) : response()->json(['message' => 'Absensi gagal disimpan'], 501);
+    private function checkClockResponse($attendance)
+    {
+        return $attendance ?
+            (new AttendanceResource($attendance['attendance']))->additional(['message' => $attendance['message']]) : (new AttendanceResource(null, false))->additional(['message' => 'Terjadi kesalahan, check clock gagal disimpan']);
     }
 
     public function attendanceImage(Request $request)

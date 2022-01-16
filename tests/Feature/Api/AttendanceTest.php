@@ -32,13 +32,13 @@ class AttendanceTest extends TestCase
             'longtitude' => 'Test longtitude',
             'location_id' => $location->id
         ]);
-
+        //    print_r($response->json());
         $response->assertJson([
             'data' => [
-                'email' => $user->email,
-                'whatsapp' => '085100825543',
-                'alamat' => 'Test Alamat',
-                'nama' => 'Change Nama'
+                'type' => 0,
+                'latitude' => 'Test latitude',
+                'longtitude' => 'Test longtitude',
+                'location_id' => $location->id
             ],
             'success' => true,
         ]);

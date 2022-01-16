@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Http\Requests\UserRequest;
+use App\Mail\ResetPasswordMail;
 use App\Models\User;
 use Auth;
 use Carbon\Carbon;
@@ -12,6 +13,8 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use Mail;
+use Password;
 use Ramsey\Uuid\Uuid;
 use Storage;
 use Yajra\DataTables\Facades\DataTables;
@@ -175,5 +178,27 @@ class UserRepository extends BaseRepository
         $user->lock = $lock ? 1 : 0;
         $user->save();
         return $user;
+    }
+
+    private function generatePIN($digits = 6)
+    {
+        $i = 0; //counter
+        $pin = ""; //our default pin is blank.
+        while ($i < $digits) {
+            //generate a random number between 0 and 9.
+            $pin .= mt_rand(0, 9);
+            $i++;
+        }
+        return $pin;
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $user = User::where('email', $request->email)->first();
+        $newPassword = $this->generatePIN();
+        $user->password = Hash::make($newPassword);
+        $user->save();
+        Mail::to($user)
+            ->send(new ResetPasswordMail($newPassword, $user));
     }
 }

@@ -35,7 +35,6 @@ class AuthController extends Controller
     {
         $credentials = $userLoginRequest->only(['email', 'password']);
         $user = User::where('email', $credentials['email'])
-
             ->first();
 
         if (!$user) {
@@ -76,7 +75,10 @@ class AuthController extends Controller
         Auth::login($user);
 
         if (!auth()->user()->device_id) {
-            return response()->json(['message' => 'Device ID belum di daftarkan'], 401);
+
+            $user->device_id = $userLoginRequest->post('device_id');
+            $user->save();
+            // return response()->json(['message' => 'Device ID belum di daftarkan'], 401);
         }
 
         if (auth()->user()->device_id != $userLoginRequest->post('device_id')) {

@@ -29,8 +29,8 @@ Route::get('/', function () {
 });
 
 Route::middleware('api')->group(function () {
-    Route::post('/auth/login', [AuthController::class, 'login']);
-    Route::post('/reset-password', [PasswordController::class, 'resetPassword']);
+    Route::post('/auth/login', [AuthController::class, 'login'])->name('api.login');
+    Route::post('/reset-password', [PasswordController::class, 'resetPassword'])->name('api.resetPassword');
 });
 
 Route::middleware(['auth:api'])->group(function () {

@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -12,16 +13,19 @@ class ResetPasswordMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    protected $token;
+    public $newPassword;
+
+    public $user;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($token)
+    public function __construct($newPassword, User $user)
     {
-        $this->token = $token;
+        $this->newPassword = $newPassword;
+        $this->user = $user;
     }
 
     /**
@@ -31,10 +35,11 @@ class ResetPasswordMail extends Mailable
      */
     public function build()
     {
-        $to = Arr::get($this->to, '0.address');
-
-        return $this->markdown('emails.reset', [
-            'token' => $this->token
-        ]);
+        $user = $this->user;
+        $this->withSwiftMessage(function ($message) use ($user) {
+            $message->user = $user;
+        });
+        $this->subject('Reset Password');
+        return $this->view('emails.reset');
     }
 }

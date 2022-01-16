@@ -11,6 +11,8 @@
       <th>ID</th>
       <th>NIK</th>
       <th>Nama</th>
+      <th>Duty On</th>
+      <th>Duty Off</th>
       <th>Check Clock</th>
       <th>Tipe Clock</th>
       <th>Tipe</th>
@@ -26,17 +28,16 @@
 
 
 @push('css')
-  <style>
-    #<?="$id "?>th,
-    #<?="$id "?>td {
-      white-space: nowrap;
-    }
-
-  </style>
+<style>
+  #<?="$id "?>th,
+  #<?="$id "?>td {
+    white-space: nowrap;
+  }
+</style>
 @endpush
 @push('js')
-  <script>
-    (function() {
+<script>
+  (function() {
       function refreshTable() {
         window['{{ $id }}'].ajax.reload();
       }
@@ -112,6 +113,14 @@
             data: 'user_nama'
           },
           {
+            name: 'schedules.duty_on',
+            data: 'duty_on'
+          },
+          {
+            name: 'schedules.duty_off',
+            data: 'duty_off'
+          },
+          {
             name: 'attendances.check_clock',
             data: 'check_clock'
           },
@@ -171,5 +180,5 @@
 
 
     })()
-  </script>
+</script>
 @endpush
