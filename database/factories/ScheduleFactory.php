@@ -19,17 +19,23 @@ class ScheduleFactory extends Factory
         $user = null;
         $duty_on = '';
         $duty_off = '';
+        $i = 1;
+        $user = User::all()->random(1)->first();
         while ($exist) {
-            $user = User::all()->random()->first();
-            $date = rand(1, 31);
-            $date = strlen($date) == 1 ? '0' . $date : $date;
+            if ($i == 31) {
+                $i = 1;
+            }
+
+
+            $date = strlen($i) == 1 ? '0' . $i : $i;
             $duty_on = '2021-01-' . $date . ' 07:00:00';
             $duty_off = '2021-01-' . $date . ' 17:00:00';
 
             $scheduleExist = Schedule::where('user_id', $user->id)
-                ->whereDate('duty_on', '2021-01-' . $date)
+                ->where('duty_on', $duty_on)
                 ->first();
             $exist = $scheduleExist;
+            $i++;
         }
 
         return [
