@@ -137,8 +137,8 @@
         var formData = new FormData(this);
         if (id) {
           formData.append('_method', 'PUT');
-          formData.append('tgl_lahir', tglLahir.value);
         }
+        formData.set('tgl_lahir', tglLahir.value);
         $.ajax({
           url: id ? "{{ url('user/') }}/" + id : "{{ route('user.store') }}", // if id exist use update URL
           method: 'POST', // if id exist use PUT
