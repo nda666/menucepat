@@ -41,20 +41,89 @@ class AttendanceFactory extends Factory
                 ->first();
             $exist = $attendanceExist;
         }
+
+        Attendance::insert([
+            [
+                'schedule_id' => $schedule ? $schedule->id : null,
+                'latitude' => $this->faker->latitude(),
+                'longtitude' => $this->faker->longitude(),
+                'user_id' => $schedule->user_id,
+                'check_clock' => $date . ' ' . $clockOut,
+                'clock_type' => 1,
+                'location_id' => Location::all()->random(1)->first()->id,
+                'location_name' => 'Test Lokasi',
+                'image' => 'private/attendance/zgKeuF8w18FdLP5KosT9SlEOgWuwhbMHLo6A5PNs.png',
+                'description' => $this->faker->words(3, true),
+                'reason' => $this->faker->words(3, true),
+                'type' => 0,
+            ], [
+                'schedule_id' => $schedule ? $schedule->id : null,
+                'latitude' => $this->faker->latitude(),
+                'longtitude' => $this->faker->longitude(),
+                'user_id' => $schedule->user_id,
+                'check_clock' => $date . ' 09:00:00',
+                'clock_type' => 0,
+                'location_id' => Location::all()->random(1)->first()->id,
+                'location_name' => 'Test Lokasi',
+                'image' => 'private/attendance/zgKeuF8w18FdLP5KosT9SlEOgWuwhbMHLo6A5PNs.png',
+                'description' => $this->faker->words(3, true),
+                'reason' => $this->faker->words(3, true),
+                'type' => 1,
+            ],
+            [
+                'schedule_id' => $schedule ? $schedule->id : null,
+                'latitude' => $this->faker->latitude(),
+                'longtitude' => $this->faker->longitude(),
+                'user_id' => $schedule->user_id,
+                'check_clock' => $date . ' 10:00:00',
+                'clock_type' => 1,
+                'location_id' => Location::all()->random(1)->first()->id,
+                'location_name' => 'Test Lokasi',
+                'image' => 'private/attendance/zgKeuF8w18FdLP5KosT9SlEOgWuwhbMHLo6A5PNs.png',
+                'description' => $this->faker->words(3, true),
+                'reason' => $this->faker->words(3, true),
+                'type' => 1,
+            ], [
+                'schedule_id' => $schedule ? $schedule->id : null,
+                'latitude' => $this->faker->latitude(),
+                'longtitude' => $this->faker->longitude(),
+                'user_id' => $schedule->user_id,
+                'check_clock' => $date . ' 12:00:00',
+                'clock_type' => 0,
+                'location_id' => Location::all()->random(1)->first()->id,
+                'location_name' => 'Test Lokasi',
+                'image' => 'private/attendance/zgKeuF8w18FdLP5KosT9SlEOgWuwhbMHLo6A5PNs.png',
+                'description' => $this->faker->words(3, true),
+                'reason' => $this->faker->words(3, true),
+                'type' => 1,
+            ], [
+                'schedule_id' => $schedule ? $schedule->id : null,
+                'latitude' => $this->faker->latitude(),
+                'longtitude' => $this->faker->longitude(),
+                'user_id' => $schedule->user_id,
+                'check_clock' => $date . ' 13:00:00',
+                'clock_type' => 1,
+                'location_id' => Location::all()->random(1)->first()->id,
+                'location_name' => 'Test Lokasi',
+                'image' => 'private/attendance/zgKeuF8w18FdLP5KosT9SlEOgWuwhbMHLo6A5PNs.png',
+                'description' => $this->faker->words(3, true),
+                'reason' => $this->faker->words(3, true),
+                'type' => 1,
+            ]
+        ]);
         return [
             'schedule_id' => $schedule ? $schedule->id : null,
             'latitude' => $this->faker->latitude(),
             'longtitude' => $this->faker->longitude(),
             'user_id' => $schedule->user_id,
             'check_clock' => $date . ' ' . $clockIn,
-            'clock_type' => rand(0, 1),
+            'clock_type' => 0,
             'location_id' => Location::all()->random(1)->first()->id,
             'location_name' => 'Test Lokasi',
             'image' => 'private/attendance/zgKeuF8w18FdLP5KosT9SlEOgWuwhbMHLo6A5PNs.png',
             'description' => $this->faker->words(3, true),
             'reason' => $this->faker->words(3, true),
-            'type' => rand(0, 1),
-
+            'type' => 0,
         ];
     }
 }

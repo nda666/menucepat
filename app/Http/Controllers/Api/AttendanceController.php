@@ -24,11 +24,9 @@ class AttendanceController extends Controller
     public function currentAttendance()
     {
         $attendance = $this->attendaceRepo->currentAttendance(auth()->user()->id);
-
         return new BaseResource($attendance);
     }
 
-    /** */
     public function clockIn(ClockInRequest $clockInRequest)
     {
         $attendance = $this->attendaceRepo->clockIn($clockInRequest);
@@ -49,11 +47,6 @@ class AttendanceController extends Controller
 
     public function attendanceImage(Request $request)
     {
-        $attendance = Attendance::where('image', $request->get('path'))->first();
-        // if (auth()->user()->can('view', $attendance)) {
         return Storage::response($request->get('path'));
-        // } else {
-        //     return 'Nope, sorry bro, access denied!';
-        // }
     }
 }

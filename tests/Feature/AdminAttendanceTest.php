@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Admin;
 use App\Models\Attendance;
 use App\Models\Location;
+use App\Models\Schedule;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
@@ -20,7 +21,8 @@ class AdminAttendanceTest extends TestCase
         $user = Admin::factory(1)->create()->first();
         $employee = User::factory(20)->create();
         $location = Location::factory(5)->create();
-        $attendance = Attendance::factory(100)->create();
+        $schedule = Schedule::factory(1)->create();
+        $attendance = Attendance::factory(1)->create();
         $response = $this->actingAs($user, 'admin')
             ->get('/attendance/table');
         $response->assertJsonStructure([

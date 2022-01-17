@@ -11,6 +11,7 @@ use App\Models\Schedule;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -150,6 +151,13 @@ class AttendanceRepository extends BaseRepository
         return $model;
     }
 
+    /**
+     * Filter and paginated attendances
+     *
+     * @param Builder $attendances
+     * @param Request $request
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     private function filterPaginated(Builder $attendances, Request $request)
     {
         $request->get('nameOrNIK') && $attendances->where(function ($multiWhere) use ($request) {
@@ -193,7 +201,9 @@ class AttendanceRepository extends BaseRepository
             ->orderBy('attendances.check_clock', 'asc')
             ->get();
         $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
+        $worksheet = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($spreadsheet, 'Attendance Report - Details');
+        $spreadsheet->addSheet($worksheet, 0);
+        $sheet = $spreadsheet->setActiveSheetIndex(0);
 
 
         $this->createExcelHeaderCell($sheet);
@@ -203,7 +213,7 @@ class AttendanceRepository extends BaseRepository
             if (SexType::getKey($attendance->sex) == 'FEMALE') {
                 $defaultImage = 'public/images/avatar-f.png';
             }
-            $this->createExcelImageCell($sheet, $attendance->user_image ? $attendance->user_image : $defaultImage, 'A' . $row);
+            // $this->createExcelImageCell($sheet, $attendance->user_image ? $attendance->user_image : $defaultImage, 'A' . $row);
             $sheet->getRowDimension($row)->setRowHeight(50);
             $sheet->setCellValue('B' . $row, $attendance->nik);
             $sheet->setCellValue('C' . $row, $attendance->user_nama);
@@ -214,10 +224,9 @@ class AttendanceRepository extends BaseRepository
             $sheet->setCellValue('H' . $row, $attendance->clock_type->key);
             $sheet->setCellValue('I' . $row, $attendance->type->key);
             $sheet->setCellValue('J' . $row, $attendance->description);
-            $this->createExcelImageCell($sheet, $attendance->getRawOriginal('image'), 'K' . $row);
+            // $this->createExcelImageCell($sheet, $attendance->getRawOriginal('image'), 'K' . $row);
             $sheet->setCellValue('L' . $row, $attendance->location_name);
             $sheet->setCellValue('M' . $row, $attendance->latitude . ',' . $attendance->longtitude);
-
             $row++;
         }
 
@@ -225,6 +234,8 @@ class AttendanceRepository extends BaseRepository
             $spreadsheet->getActiveSheet()->getColumnDimension($columnID)
                 ->setAutoSize(true);
         }
+
+        $spreadsheet = $this->makeSecondWorksheet($spreadsheet, $attendances);
 
         $writer = new Xls($spreadsheet);
         $response =  new StreamedResponse(
@@ -311,6 +322,115 @@ class AttendanceRepository extends BaseRepository
         $sheet->setCellValue('M3', 'Koordinat');
 
         $sheet->getStyle('A3:M4')->applyFromArray([
+            'font' => [
+                'bold' => true,
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+            ],
+        ]);
+    }
+
+    private function excelSummaryData(Collection $attendances)
+    {
+        $data = [];
+        foreach ($attendances as $attendance) {
+            $data[$attendance->user_id][$attendance->duty_on][] = $attendance->toArray();
+        }
+        foreach ($data as $userId => $groupedAttendance) {
+            foreach ($groupedAttendance as $key =>  $perDateAttendace) {
+                usort($data[$userId][$key], function ($a, $b) {
+                    return $a['type'] - $b['type'];
+                });
+            }
+        }
+        return $data;
+    }
+
+
+
+    private function makeSecondWorksheet(Spreadsheet $spreadsheet, Collection $attendances)
+    {
+
+        $worksheet = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($spreadsheet, 'Attendance Report - Summary');
+        $sheet = $spreadsheet->addSheet($worksheet, 1);
+        $this->createSecondExcelHeaderCell($sheet);
+        $groupedAttendances = $this->excelSummaryData($attendances);
+        $row = 5;
+        foreach ($groupedAttendances as $groupedAttendance) {
+            foreach ($groupedAttendance as $key =>  $perDateAttendace) {
+                $max = count($perDateAttendace);
+                for ($i = 0; $i < $max; $i++) {
+                    $sheet->setCellValue('A' . $row, $perDateAttendace[$i]['user_id']);
+                    $sheet->setCellValue('B' . $row, $perDateAttendace[$i]['nik']);
+                    $sheet->setCellValue('C' . $row, $perDateAttendace[$i]['user_nama']);
+                    $row++;
+                }
+                // if ($perDateAttendace[$i]['clock_type'] == 0) {
+                //     $i++;
+                // }
+
+            }
+        }
+
+        return $spreadsheet;
+    }
+
+    private function createSecondExcelHeaderCell(Worksheet $sheet)
+    {
+
+        $sheet->mergeCells('B1:M1');
+        $sheet->setCellValue('B1', 'Attendance Report - Summary');
+        $sheet->getStyle('B1')->applyFromArray([
+            'font' => [
+                'bold' => true,
+                'size' => 16,
+            ],
+        ]);
+        $sheet->mergeCells('A3:A4');
+        $sheet->setCellValue('A3', 'Photo');
+
+        $sheet->mergeCells('B3:B4');
+        $sheet->setCellValue('B3', 'NIK');
+
+        $sheet->mergeCells('C3:C4');
+        $sheet->setCellValue('C3', 'NAMA');
+
+        $sheet->mergeCells('D3:D4');
+        $sheet->setCellValue('D3', 'Kode Jadwal');
+
+        $sheet->mergeCells('E3:F3');
+        $sheet->setCellValue('E3', 'Jadwal Detail');
+        $sheet->setCellValue('E4', 'Dutty On');
+        $sheet->setCellValue('F4', 'Dutty Off');
+
+        $sheet->mergeCells('G3:H3');
+        $sheet->setCellValue('G3', 'Aktual Detail');
+        $sheet->setCellValue('G4', 'Datetime');
+        $sheet->setCellValue('H4', 'Tipe Clock');
+
+        $sheet->mergeCells('I3:I4');
+        $sheet->setCellValue('I3', 'Tipe Attendance');
+
+        $sheet->mergeCells('J3:K3');
+        $sheet->setCellValue('J3', 'Keterangan');
+        $sheet->setCellValue('J4', 'In');
+        $sheet->setCellValue('K4', 'Out');
+
+        $sheet->mergeCells('L3:M3');
+        $sheet->setCellValue('L3', 'Photo Capture');
+        $sheet->setCellValue('L4', 'In');
+        $sheet->setCellValue('M4', 'Out');
+
+        $sheet->mergeCells('N3:O3');
+        $sheet->setCellValue('N3', 'Lokasi');
+        $sheet->setCellValue('N4', 'In');
+        $sheet->setCellValue('O4', 'Out');
+
+        $sheet->mergeCells('P3:P4');
+        $sheet->setCellValue('P3', 'Koordinat');
+
+        $sheet->getStyle('A3:P4')->applyFromArray([
             'font' => [
                 'bold' => true,
             ],

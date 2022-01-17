@@ -22,7 +22,6 @@ class AnnouncementController extends Controller
     public function index(Request $request)
     {
         $annoucements = $this->announcementRepository->findFilter($request);
-
         return new BaseResource($annoucements);
     }
 }
