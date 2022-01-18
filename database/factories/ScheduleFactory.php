@@ -4,10 +4,15 @@ namespace Database\Factories;
 
 use App\Models\Schedule;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ScheduleFactory extends Factory
 {
+    public static $createdData = [];
+    public $duty_on = null;
+    public static $countCreated = 0;
+
     /**
      * Define the model's default state.
      *
@@ -15,39 +20,48 @@ class ScheduleFactory extends Factory
      */
     public function definition()
     {
+        if (!$this->duty_on) {
+            $this->duty_on = Carbon::create(2022, 1, 1, 8, 0, 0);
+        }
         $exist = true;
         $user = null;
         $duty_on = '';
         $duty_off = '';
-        $i = 1;
         $indexUser = 0;
-        $user = User::all()->toArray();
+        $userId = Schedule::all()->pluck('user_id')->toArray();
+        $user = $userId ?
+            User::whereNotIn('id', $userId)->get()->toArray() :
+            User::all()->toArray();
         $userId = $user[0]['id'];
         while ($exist) {
-            if ($i == 31) {
-                $i = 1;
+            if (self::$countCreated == 30) {
+                self::$countCreated == 0;
                 $indexUser++;
+                $this->duty_on = Carbon::create(2022, 1, 1, 8, 0, 0);
                 $userId = $user[$indexUser]['id'];
             }
 
+            // $date = strlen($i) == 1 ? '0' . $i : $i;
+            $duty_on =  $this->duty_on->format('Y-m-d H:i:s');
+            $duty_off =  $this->duty_on->format('Y-m-d 17:i:s');
 
+            // $scheduleExist = Schedule::where('user_id', $userId)
+            //     ->where('duty_on', $duty_on)
+            //     ->first();
 
-            $date = strlen($i) == 1 ? '0' . $i : $i;
-            $duty_on = '2021-01-' . $date . ' 07:00:00';
-            $duty_off = '2021-01-' . $date . ' 17:00:00';
-
-            $scheduleExist = Schedule::where('user_id', $userId)
-                ->where('duty_on', $duty_on)
-                ->first();
-            $exist = $scheduleExist;
-            $i++;
+            $exist = isset(self::$createdData[$userId][$duty_on]);
+            $this->duty_on->addDay();
+            self::$countCreated = self::$countCreated + 1;
         }
-
-        return [
+        $insert = [
             'code' => $this->faker->regexify('[A-Z0-9]{2}'),
-            'user_id' => $user[$indexUser]['id'],
+            'user_id' => $user[$userId]['id'],
             'duty_on' =>  $duty_on,
             'duty_off' => $duty_off
         ];
+
+        self::$createdData[$user[$userId]['id']][$duty_on] = true;
+
+        return $insert;
     }
 }
