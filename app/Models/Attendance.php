@@ -12,6 +12,8 @@ class Attendance extends Model
 {
     use HasFactory, CastsEnums;
 
+    public $dates = ['created_at', 'updated_at', 'check_clock'];
+
     protected $casts = [
         'type' => AttendanceType::class,
         'clock_type' => ClockType::class

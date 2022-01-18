@@ -19,6 +19,7 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
 use Storage;
+use Image;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -213,7 +214,7 @@ class AttendanceRepository extends BaseRepository
             if (SexType::getKey($attendance->sex) == 'FEMALE') {
                 $defaultImage = 'public/images/avatar-f.png';
             }
-            // $this->createExcelImageCell($sheet, $attendance->user_image ? $attendance->user_image : $defaultImage, 'A' . $row);
+            $this->createExcelImageCell($sheet, $attendance->user_image ? $attendance->user_image : $defaultImage, 'A' . $row);
             $sheet->getRowDimension($row)->setRowHeight(50);
             $sheet->setCellValue('B' . $row, $attendance->nik);
             $sheet->setCellValue('C' . $row, $attendance->user_nama);
@@ -224,7 +225,7 @@ class AttendanceRepository extends BaseRepository
             $sheet->setCellValue('H' . $row, $attendance->clock_type->key);
             $sheet->setCellValue('I' . $row, $attendance->type->key);
             $sheet->setCellValue('J' . $row, $attendance->description);
-            // $this->createExcelImageCell($sheet, $attendance->getRawOriginal('image'), 'K' . $row);
+            $this->createExcelImageCell($sheet, $attendance->getRawOriginal('image'), 'K' . $row);
             $sheet->setCellValue('L' . $row, $attendance->location_name);
             $sheet->setCellValue('M' . $row, $attendance->latitude . ',' . $attendance->longtitude);
             $row++;
@@ -263,8 +264,14 @@ class AttendanceRepository extends BaseRepository
         String $coordinate
     ) {
         if (Storage::exists($image)) {
+            Storage::makeDirectory('temp');
+            $fileName = storage_path('app/temp/' . pathinfo(Storage::path($image), PATHINFO_FILENAME) . 'jpg');
+            $img = Image::cache(function ($oImage) use ($image, $fileName) {
+                return $oImage->make(Storage::path($image))->resize(50, 50)->save($fileName, 80);
+            });
+
             $drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
-            $drawing->setPath(Storage::path($image));
+            $drawing->setPath($fileName);
             $drawing->setCoordinates($coordinate);
             $drawing->setWidthAndHeight(50, 50);
             $drawing->setOffsetX(5);
@@ -333,9 +340,14 @@ class AttendanceRepository extends BaseRepository
 
     private function excelSummaryData(Collection $attendances)
     {
+
         $data = [];
         foreach ($attendances as $attendance) {
-            $data[$attendance->user_id][$attendance->duty_on][] = $attendance->toArray();
+            $toArray = $attendance->toArray();
+            $toArray['duty_on'] = Carbon::parse($attendance->duty_on)->format('d/m/Y H:i');
+            $toArray['duty_off'] =  Carbon::parse($attendance->duty_off)->format('d/m/Y H:i');
+            $toArray['check_clock'] =  Carbon::parse($attendance->check_clock)->format('d/m/Y H:i');
+            $data[$attendance->user_id][$attendance->duty_on][] = $toArray;
         }
         foreach ($data as $userId => $groupedAttendance) {
             foreach ($groupedAttendance as $key =>  $perDateAttendace) {
@@ -361,9 +373,48 @@ class AttendanceRepository extends BaseRepository
             foreach ($groupedAttendance as $key =>  $perDateAttendace) {
                 $max = count($perDateAttendace);
                 for ($i = 0; $i < $max; $i++) {
-                    $sheet->setCellValue('A' . $row, $perDateAttendace[$i]['user_id']);
+                    $sheet->getRowDimension($row)->setRowHeight(55);
+                    /** We resize the image to 50px in createExcelImageCell(), to avoid memory leaks */
+                    $this->createExcelImageCell($sheet, $perDateAttendace[$i]['user_image'], 'A' . $row);
                     $sheet->setCellValue('B' . $row, $perDateAttendace[$i]['nik']);
                     $sheet->setCellValue('C' . $row, $perDateAttendace[$i]['user_nama']);
+                    $sheet->setCellValue('D' . $row, $perDateAttendace[$i]['schedule_code']);
+                    $sheet->setCellValue('E' . $row, $perDateAttendace[$i]['duty_off']);
+                    $sheet->setCellValue('F' . $row, $perDateAttendace[$i]['duty_off']);
+
+                    //Start Check Clock 
+                    $perDateAttendace[$i]['clock_type'] == ClockType::IN && $sheet->setCellValue('G' . $row, $perDateAttendace[$i]['check_clock']);
+
+                    if (isset($perDateAttendace[$i + 1])) {
+                        $perDateAttendace[$i + 1]['clock_type'] == ClockType::OUT && $sheet->setCellValue('H' . $row, $perDateAttendace[$i + 1]['check_clock']);
+                    }
+                    //End Check Clock 
+
+                    $sheet->setCellValue('I' . $row, AttendanceType::getKey($perDateAttendace[$i]['type']));
+
+                    #Start Description / Keterangan
+                    $perDateAttendace[$i]['clock_type'] == ClockType::IN && $sheet->setCellValue('J' . $row, $perDateAttendace[$i]['description']);
+                    if (isset($perDateAttendace[$i + 1])) {
+                        $perDateAttendace[$i + 1]['clock_type'] == ClockType::OUT && $sheet->setCellValue('K' . $row, $perDateAttendace[$i + 1]['description']);
+                    }
+                    #END Description / Keterangan
+
+                    #Start Image Capture
+                    $perDateAttendace[$i]['clock_type'] == ClockType::IN && $this->createExcelImageCell($sheet, $perDateAttendace[$i]['user_image'], 'L' . $row);
+                    if (isset($perDateAttendace[$i + 1])) {
+                        $perDateAttendace[$i + 1]['clock_type'] == ClockType::OUT &&   $this->createExcelImageCell($sheet, $perDateAttendace[$i + 1]['user_image'], 'M' . $row);
+                    }
+                    #END Image Capture
+
+
+                    $perDateAttendace[$i]['clock_type'] == ClockType::IN && $sheet->setCellValue('N' . $row, $perDateAttendace[$i]['location_name']);
+                    if (isset($perDateAttendace[$i + 1])) {
+                        $perDateAttendace[$i + 1]['clock_type'] == ClockType::OUT && $sheet->setCellValue('O' . $row, $perDateAttendace[$i]['location_name']);
+                    }
+
+                    $sheet->setCellValue('P' . $row, $perDateAttendace[$i]['latitude'] . ',' . $perDateAttendace[$i]['longtitude']);
+
+                    (isset($perDateAttendace[$i + 1]) && $perDateAttendace[$i + 1]['clock_type'] == ClockType::OUT) && $i++;
                     $row++;
                 }
                 // if ($perDateAttendace[$i]['clock_type'] == 0) {
@@ -372,7 +423,9 @@ class AttendanceRepository extends BaseRepository
 
             }
         }
-
+        $sheet->getStyle('A1:P' . $row)->getAlignment()->setWrapText(true);
+        $sheet->getStyle('A1:P' . $row)->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+        $sheet->getStyle('A1:P' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
         return $spreadsheet;
     }
 
@@ -390,44 +443,60 @@ class AttendanceRepository extends BaseRepository
         $sheet->mergeCells('A3:A4');
         $sheet->setCellValue('A3', 'Photo');
 
+
         $sheet->mergeCells('B3:B4');
         $sheet->setCellValue('B3', 'NIK');
+        $sheet->getColumnDimension('B')->setWidth(10);
 
         $sheet->mergeCells('C3:C4');
         $sheet->setCellValue('C3', 'NAMA');
+        $sheet->getColumnDimension('C')->setWidth(14);
 
         $sheet->mergeCells('D3:D4');
         $sheet->setCellValue('D3', 'Kode Jadwal');
+        $sheet->getColumnDimension('D')->setWidth(14);
 
         $sheet->mergeCells('E3:F3');
+        $sheet->getColumnDimension('E')->setWidth(16);
+        $sheet->getColumnDimension('F')->setWidth(16);
         $sheet->setCellValue('E3', 'Jadwal Detail');
         $sheet->setCellValue('E4', 'Dutty On');
         $sheet->setCellValue('F4', 'Dutty Off');
 
         $sheet->mergeCells('G3:H3');
+        $sheet->getColumnDimension('G')->setWidth(16);
+        $sheet->getColumnDimension('H')->setWidth(16);
         $sheet->setCellValue('G3', 'Aktual Detail');
-        $sheet->setCellValue('G4', 'Datetime');
-        $sheet->setCellValue('H4', 'Tipe Clock');
+        $sheet->setCellValue('G4', 'In');
+        $sheet->setCellValue('H4', 'Out');
 
         $sheet->mergeCells('I3:I4');
+        $sheet->getColumnDimension('I')->setWidth(16);
         $sheet->setCellValue('I3', 'Tipe Attendance');
 
         $sheet->mergeCells('J3:K3');
+        $sheet->getColumnDimension('J')->setWidth(16);
+        $sheet->getColumnDimension('K')->setWidth(16);
         $sheet->setCellValue('J3', 'Keterangan');
         $sheet->setCellValue('J4', 'In');
         $sheet->setCellValue('K4', 'Out');
 
         $sheet->mergeCells('L3:M3');
+        $sheet->getColumnDimension('L')->setWidth(16);
+        $sheet->getColumnDimension('M')->setWidth(16);
         $sheet->setCellValue('L3', 'Photo Capture');
         $sheet->setCellValue('L4', 'In');
         $sheet->setCellValue('M4', 'Out');
 
         $sheet->mergeCells('N3:O3');
+        $sheet->getColumnDimension('N')->setWidth(10);
+        $sheet->getColumnDimension('O')->setWidth(10);
         $sheet->setCellValue('N3', 'Lokasi');
         $sheet->setCellValue('N4', 'In');
         $sheet->setCellValue('O4', 'Out');
 
         $sheet->mergeCells('P3:P4');
+        $sheet->getColumnDimension('P')->setWidth(16);
         $sheet->setCellValue('P3', 'Koordinat');
 
         $sheet->getStyle('A3:P4')->applyFromArray([
