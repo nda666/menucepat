@@ -19,7 +19,7 @@ class AttendanceTest extends TestCase
     {
         $user = User::factory(1)->create()->first();
         $location = Location::factory(1)->create()->first();
-        $schedule = Schedule::factory()->make();
+        $schedule = Schedule::factory(1)->make()->first();
         $schedule->duty_on = Carbon::now()->format('Y-m-d 08:00:00');
         $schedule->duty_off = Carbon::now()->format('Y-m-d 18:00:00');
         $schedule->user_id = $user->id;

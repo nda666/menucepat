@@ -251,7 +251,7 @@ class AttendanceRepository extends BaseRepository
     }
 
     /**
-     * Undocumented function
+     * Add Image to cell
      *
      * @param Worksheet $sheet Worksheet Instance
      * @param mixed $image Path to image from storage path

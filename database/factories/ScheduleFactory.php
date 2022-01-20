@@ -55,12 +55,12 @@ class ScheduleFactory extends Factory
         self::$countCreated++;
         $insert = [
             'code' => $this->faker->regexify('[A-Z0-9]{2}'),
-            'user_id' => $user[$userId]['id'],
+            'user_id' => $userId,
             'duty_on' =>  $duty_on,
             'duty_off' => $duty_off
         ];
 
-        self::$createdData[$user[$userId]['id']][$duty_on] = true;
+        self::$createdData[$userId][$duty_on] = true;
 
         return $insert;
     }

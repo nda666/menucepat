@@ -3,6 +3,8 @@
 namespace Tests\Feature\Api;
 
 use App\Models\User;
+use Carbon\Carbon;
+use Hash;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Log;
 use Tests\TestCase;
@@ -11,16 +13,24 @@ class PasswordTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
-    function change_password()
+    /** @var \App\Models\User */
+    private $user;
+
+    function setUp(): void
     {
-        $user = User::factory(1)->create()->first();
-        $user->email = 'adhabakhtiar@gmail.com';
-        $user->save();
-        $response = $this->actingAs($user, 'api')->post(route('api.resetPassword'), [
+        parent::setUp();
+        $this->user = User::factory(1)->create()->first();
+        $this->user->email = 'adhabakhtiar@gmail.com';
+        $this->user->save();
+    }
+
+    /** @test */
+    function reset_password()
+    {
+        $user = $this->user;
+        $response = $this->post(route('api.resetPassword'), [
             'email' => $user->email,
         ]);
-
         $response->assertJson([
             'success' => true,
             'message' => 'Kami sudah mengirim surel yang berisi password baru untuk Anda'

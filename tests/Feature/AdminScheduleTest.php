@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Admin;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Tests\TestCase;
@@ -39,12 +40,14 @@ class AdminScheduleTest extends TestCase
     {
         $admin = Admin::factory(1)->create()->first();
         $user = User::factory(1)->create()->first();
+        $dutyOn = Carbon::parse("2022-01-09 08:00");
+        $dutyOff = Carbon::parse("2022-01-09 16:00");
         $response = $this->actingAs($user, 'admin')
             ->post('schedule', [
                 "user_id" => $user->id,
                 "code" => 'CN',
-                "duty_on" => "2022-01-09 08:00",
-                "duty_off" => "2022-01-09 16:00"
+                "duty_on" => $dutyOn->format('Y-m-d H:i'),
+                "duty_off" => $dutyOff->format('Y-m-d H:i'),
             ]);
 
         // should return 201
@@ -55,8 +58,8 @@ class AdminScheduleTest extends TestCase
             'data' => [
                 "user_id" => $user->id,
                 "code" => 'CN',
-                "duty_on" => "2022-01-09 08:00",
-                "duty_off" => "2022-01-09 16:00"
+                "duty_on" => $dutyOn->jsonSerialize(),
+                "duty_off" => $dutyOff->jsonSerialize()
             ],
         ]);
     }

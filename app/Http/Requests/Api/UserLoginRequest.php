@@ -25,7 +25,8 @@ class UserLoginRequest extends FormRequest
     {
         return [
             'email' => 'required|email',
-            'password' => 'required'
+            'password' => 'required',
+            'device_id' => 'required|min:4'
         ];
     }
 }

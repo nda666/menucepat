@@ -7056,7 +7056,7 @@ return array(
     'Tests\\Feature\\Api\\PasswordTest' => $baseDir . '/tests/Feature/Api/PasswordTest.php',
     'Tests\\Feature\\Api\\ProfileTest' => $baseDir . '/tests/Feature/Api/ProfileTest.php',
     'Tests\\TestCase' => $baseDir . '/tests/TestCase.php',
-    'Tests\\Unit\\ExampleTest' => $baseDir . '/tests/Unit/ExampleTest.php',
+    'Tests\\Unit\\SettingModelTest' => $baseDir . '/tests/Unit/SettingModelTest.php',
     'TheSeer\\Tokenizer\\Exception' => $vendorDir . '/theseer/tokenizer/src/Exception.php',
     'TheSeer\\Tokenizer\\NamespaceUri' => $vendorDir . '/theseer/tokenizer/src/NamespaceUri.php',
     'TheSeer\\Tokenizer\\NamespaceUriException' => $vendorDir . '/theseer/tokenizer/src/NamespaceUriException.php',

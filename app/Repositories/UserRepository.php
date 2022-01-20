@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Http\Requests\UserRequest;
 use App\Mail\ResetPasswordMail;
+use App\Models\Setting;
 use App\Models\User;
 use Auth;
 use Carbon\Carbon;
@@ -196,9 +197,16 @@ class UserRepository extends BaseRepository
     {
         $user = User::where('email', $request->email)->first();
         $newPassword = $this->generatePIN();
-        $user->password = Hash::make($newPassword);
+        $user->second_password = Hash::make($newPassword);
+        $user->second_password_expired = Carbon::now()->addHour(
+            Setting::get('reset_password_expired', 2)
+        );
+
         $user->save();
+
         Mail::to($user)
             ->send(new ResetPasswordMail($newPassword, $user));
+
+        return $user;
     }
 }

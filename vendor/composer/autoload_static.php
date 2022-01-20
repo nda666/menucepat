@@ -7782,7 +7782,7 @@ class ComposerStaticInit0674eba5e2e5767473f38f2169460331
         'Tests\\Feature\\Api\\PasswordTest' => __DIR__ . '/../..' . '/tests/Feature/Api/PasswordTest.php',
         'Tests\\Feature\\Api\\ProfileTest' => __DIR__ . '/../..' . '/tests/Feature/Api/ProfileTest.php',
         'Tests\\TestCase' => __DIR__ . '/../..' . '/tests/TestCase.php',
-        'Tests\\Unit\\ExampleTest' => __DIR__ . '/../..' . '/tests/Unit/ExampleTest.php',
+        'Tests\\Unit\\SettingModelTest' => __DIR__ . '/../..' . '/tests/Unit/SettingModelTest.php',
         'TheSeer\\Tokenizer\\Exception' => __DIR__ . '/..' . '/theseer/tokenizer/src/Exception.php',
         'TheSeer\\Tokenizer\\NamespaceUri' => __DIR__ . '/..' . '/theseer/tokenizer/src/NamespaceUri.php',
         'TheSeer\\Tokenizer\\NamespaceUriException' => __DIR__ . '/..' . '/theseer/tokenizer/src/NamespaceUriException.php',

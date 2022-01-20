@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\SettingRequest;
 use App\Http\Resources\BaseResource;
+use App\Models\Setting;
 use App\Repositories\SettingRepository;
 use Illuminate\Http\Request;
 

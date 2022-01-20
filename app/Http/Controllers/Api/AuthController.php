@@ -2,14 +2,18 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Exceptions\ApiException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\UserLoginRequest;
 use App\Http\Resources\Api\UserResource;
 use App\Models\User;
 use App\Repositories\UserRepository;
 use Auth;
+use Carbon\Carbon;
 use Hash;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
+use JsonException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class AuthController extends Controller
 {
@@ -31,45 +35,55 @@ class AuthController extends Controller
         return 'email';
     }
 
+    protected function checkIsSecondPassword(User $user, $password)
+    {
+        $auth = Hash::check($password, $user->second_password);
+        if ($auth && $user->second_password_expired < Carbon::now()) {
+            throw (new ApiException(__('auth.second_password_expired'), 401));
+        }
+        return $auth;
+    }
     public function login(UserLoginRequest $userLoginRequest)
     {
         $credentials = $userLoginRequest->only(['email', 'password']);
         $user = User::where('email', $credentials['email'])
             ->first();
-
         if (!$user) {
-            /**
-             * kita masih tidak bisa lock akun disini, karena email tidak detemukan
-             * Tapi tetap beri response login tidak valid
-             * 
-             **/
-            return response()->json(['message' => 'Data login tidak valid.'], 401);
+            # kita masih tidak bisa lock akun disini, karena email tidak detemukan
+            # Tapi tetap beri response login tidak valid
+            throw (new ApiException(__('auth.failed'), 401));
         }
-
 
         // check user lock
         if ($user->lock == 1) {
-            return response()->json(['message' => "Akun anda sedang di kunci karena gagal login {$this->maxAttempts}x, silahkan hubungi Admin."], 401);
+            throw new ApiException(__('auth.locked', ['maxAttemps' => $this->maxAttempts()]), 401);
         }
-        $user = $user->makeVisible(['password']);
+
+        $user = $user->makeVisible(['password', 'second_password']);
         $auth = Hash::check($credentials['password'], $user->password);
         if (!$auth) {
-            $this->incrementLoginAttempts($userLoginRequest);
-            $remain =  $this->limiter()->remaining($this->throttleKey($userLoginRequest), $this->maxAttempts());
+            $secondPasswordCheck = $this->checkIsSecondPassword($user, $credentials['password']);
+            if (!$secondPasswordCheck) {
+                $this->incrementLoginAttempts($userLoginRequest);
+                $remain =  $this->limiter()->remaining($this->throttleKey($userLoginRequest), $this->maxAttempts());
 
-            if ($this->hasTooManyLoginAttempts($userLoginRequest)) {
-                // di user repo kita lock akun nya
-                $this->userRepository->toggleLockAccount($user, true);
+                if ($this->hasTooManyLoginAttempts($userLoginRequest)) {
+                    // di user repo kita lock akun nya
+                    $this->userRepository->toggleLockAccount($user, true);
 
-                /**
-                 * Kita hapus perhitungan gagal login nya.
-                 * agar lock = 0 saat admin update user masih bisa login.
-                 **/
-                $this->clearLoginAttempts($userLoginRequest);
-                return response()->json(['message' => "Akun anda terkunci karena gagal login {$this->maxAttempts}x. Silahkan hubungi Admin"], 401);
+                    /**
+                     * Kita hapus perhitungan gagal login nya.
+                     * agar lock = 0 saat admin update user masih bisa login.
+                     **/
+                    $this->clearLoginAttempts($userLoginRequest);
+                    throw (new ApiException(
+                        __('auth.locked', ['maxAttemps' => $this->maxAttempts()]),
+                        401
+                    ));
+                }
+
+                throw (new ApiException(__('auth.failed_count', ['remain' => $remain . 'x']), 401));
             }
-
-            return response()->json(['message' => "Data login tidak valid. Tersisa {$remain}x kesempatan."], 401);
         }
 
         Auth::login($user);
@@ -82,7 +96,7 @@ class AuthController extends Controller
         }
 
         if (auth()->user()->device_id != $userLoginRequest->post('device_id')) {
-            return response()->json(['message' => 'Device ID tidak sesuai dengan server'], 401);
+            throw (new ApiException(__('auth.device_id'), 401));
         }
 
         $user->notif_id = $userLoginRequest->post('notif_id');
