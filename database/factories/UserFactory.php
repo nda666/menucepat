@@ -32,7 +32,8 @@ class UserFactory extends Factory
             'nik' => $this->faker->regexify('[0-9]{7}'),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'avatar' => 'public/avatars/J6zKEFHVMxZIARFhN55cy18NMMlXBeFL6xhhygqK.png',
-            'remember_token' => Str::random(10),
+            'token' => str_replace('-', '', $this->faker->uuid()),
+
         ];
     }
 
