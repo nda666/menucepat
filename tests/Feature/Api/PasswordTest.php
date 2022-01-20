@@ -25,9 +25,11 @@ class PasswordTest extends TestCase
     }
 
     /** @test */
-    function reset_password()
+    function reset_password_should_make_new_second_password()
     {
         $user = $this->user;
+        $user->setVisible(['second_password']);
+        $oldSecondPassword =  $user->second_password;
         $response = $this->post(route('api.resetPassword'), [
             'email' => $user->email,
         ]);
@@ -35,5 +37,8 @@ class PasswordTest extends TestCase
             'success' => true,
             'message' => 'Kami sudah mengirim surel yang berisi password baru untuk Anda'
         ]);
+        $user->refresh();
+
+        $this->assertNotEquals($oldSecondPassword, $user->second_password);
     }
 }
