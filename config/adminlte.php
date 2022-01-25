@@ -422,6 +422,21 @@ return [
                 ],
             ],
         ],
+        'EkkoLightbox' => [
+            'active' => false,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => '/vendor/ekko-lightbox/ekko-lightbox.min.js',
+                ],
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => '/vendor/ekko-lightbox/ekko-lightbox.css',
+                ],
+            ],
+        ],
         'DateRangePicker' => [
             'active' => false,
             'files' => [

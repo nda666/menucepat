@@ -202,6 +202,11 @@ class AttendanceRepository extends BaseRepository
                 $data = $transform->toArray();
                 $data['type'] = AttendanceType::getKey($data['type']);
                 $data['clock_type'] = ClockType::getKey($data['clock_type']);
+                $data['image'] = route('attendance.image', ['path' => $transform->getRawOriginal('image')]);
+                $data['user_image'] = $data['user_image'] ? Storage::url($data['user_image']) : null;
+                $data['check_clock'] = $transform->check_clock->format('d/m/Y H:i:s');
+                $data['duty_on'] = Carbon::parse($transform->duty_on)->format('d/m/Y H:i:s');
+                $data['duty_off'] = Carbon::parse($transform->duty_off)->format('d/m/Y H:i:s');
                 return $data;
             })
             ->toArray();

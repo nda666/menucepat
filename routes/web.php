@@ -64,6 +64,8 @@ Route::middleware('auth:admin')->group(function () {
 
     Route::get('/attendance/table', [AttendanceController::class, 'table'])->name('attendance.table');
     Route::get('/attendance/excel', [AttendanceController::class, 'excel'])->name('attendance.excel');
+    Route::get('/attendance/image', [AttendanceController::class, 'attendanceImage'])
+        ->name('attendance.image');
     Route::resource('attendance', AttendanceController::class);
 
     Route::get('/setting/table', [SettingController::class, 'table'])->name('setting.table');

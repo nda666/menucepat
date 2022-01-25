@@ -4,6 +4,7 @@
 
   <x-attendance.attendance-filter id="{{ $filterFormId }}" on-submit="window.refreshTable()" />
 </div>
+
 <table width="100%" class="table table-striped table-bordered table-sm" id="{{ $id }}" {{ $attributes }}>
   <thead>
     <tr>
@@ -11,6 +12,8 @@
       <th>ID</th>
       <th>NIK</th>
       <th>Nama</th>
+      <th>Photo</th>
+      <th>Capture</th>
       <th>Duty On</th>
       <th>Duty Off</th>
       <th>Check Clock</th>
@@ -28,16 +31,22 @@
 
 
 @push('css')
-<style>
-  #<?="$id "?>th,
-  #<?="$id "?>td {
-    white-space: nowrap;
-  }
-</style>
+  <style>
+    #<?="$id "?>th,
+    #<?="$id "?>td {
+      white-space: nowrap;
+    }
+
+    .ekko-custom-width {
+      max-width: '80vw' !important;
+      width: '80vw' !important;
+    }
+
+  </style>
 @endpush
 @push('js')
-<script>
-  (function() {
+  <script>
+    (function() {
       function refreshTable() {
         window['{{ $id }}'].ajax.reload();
       }
@@ -113,6 +122,21 @@
             data: 'user_nama'
           },
           {
+            name: 'user_image',
+            data: 'user_image',
+            render: function(img, x, row) {
+              return `<a href="${row.user_image}" data-max-width="1000" data-second="${row.image}" data-toggle="lightbox" data-gallery="example-gallery" class="col-sm-4"><img src="${img}" width="50px" height="50px" class="rounded-sm"></a>`
+            }
+          },
+          {
+            name: 'image',
+            data: 'image',
+            render: function(img, x, row) {
+              console.log(row)
+              return `<a href="${row.user_image}" data-second="${row.image}" data-toggle="lightbox" data-gallery="example-gallery" class="col-sm-4"><img src="${img}" width="50px" height="50px" class="rounded-sm"></a>`
+            }
+          },
+          {
             name: 'schedules.duty_on',
             data: 'duty_on'
           },
@@ -156,6 +180,31 @@
         ]
       });
 
+      $('body').on('click', '[data-toggle="lightbox"]', function(event) {
+        event.preventDefault();
+        let _this = $(this);
+        let div = $('<div></div>');
+        div.css({
+          display: 'flex',
+          height: '80vh',
+          flexDirection: 'row',
+          justifyContent: 'center',
+          alignItems: 'center'
+        });
+        div.html(
+          `<div class="text-center" style="width: 50%;"><img class="img-fluid" style="max-height: 80vh" src="${_this.attr('href')}" /></div><div class="text-center" style="width: 50%;"><img class="img-fluid" style="max-height: 80vh" src="${_this.attr('data-second')}"/></div>`
+        )
+        console.log(div[0])
+        var dialog = bootbox.dialog({
+          message: div[0],
+          closeButton: false,
+          size: 'xl',
+          backdrop: true
+        });
+      });
+
+
+
       $('body').on('click', '.export-excel', function(e) {
         var req = new XMLHttpRequest();
         var query = $.param(window['{{ $id }}'].ajax.params());
@@ -180,5 +229,5 @@
 
 
     })()
-</script>
+  </script>
 @endpush

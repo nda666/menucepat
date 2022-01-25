@@ -10,8 +10,6 @@
       <th>Aksi</th>
       <th>ID</th>
       <th>Nama</th>
-      <th>Photo</th>
-      <th>Capture</th>
       <th>Email</th>
       <th>Device ID</th>
       <th>Divisi</th>
@@ -93,14 +91,6 @@
           {
             name: 'nama',
             data: 'nama'
-          },
-          {
-            name: 'user_image',
-            data: 'user_image'
-          },
-          {
-            name: 'image',
-            data: 'image'
           },
           {
             name: 'email',

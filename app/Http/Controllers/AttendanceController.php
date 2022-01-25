@@ -7,6 +7,7 @@ use App\Http\Requests\AttendanceRequest;
 use App\Http\Resources\BaseResource;
 use App\Repositories\AttendanceRepository;
 use Illuminate\Http\Request;
+use Storage;
 
 class AttendanceController extends Controller
 {
@@ -31,6 +32,11 @@ class AttendanceController extends Controller
     public function table(Request $request)
     {
         return response()->json($this->attendanceRepo->paginate($request));
+    }
+
+    public function attendanceImage(Request $request)
+    {
+        return Storage::response($request->get('path'));
     }
 
     public function excel(Request $request)
