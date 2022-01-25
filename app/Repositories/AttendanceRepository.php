@@ -263,6 +263,7 @@ class AttendanceRepository extends BaseRepository
         $spreadsheet = $this->makeSecondWorksheet($spreadsheet, $attendances);
 
         $writer = new Xls($spreadsheet);
+        $writer->setPreCalculateFormulas(false);
         $response =  new StreamedResponse(
             function () use ($writer) {
                 $writer->save('php://output');
