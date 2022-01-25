@@ -24,7 +24,7 @@ class ClockOutRequest extends FormRequest
     public function rules()
     {
         return [
-            'location_id' => 'required_if:type,1',
+            'location_id' => 'required_if:type,0',
             'type' => 'required',
             'image' => 'required_if:type,1|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
             'latitude' => 'required',

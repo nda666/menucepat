@@ -41,7 +41,6 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('/profile', [ProfileController::class, 'update'])->name('api.profile.save');
     Route::post('/password', [ProfileController::class, 'password'])->name('api.password.save');
 
-
     Route::get('/users', [UserController::class, 'index'])->name('api.users');
     Route::get('/family', [FamilyController::class, 'index'])->name('api.family');
 

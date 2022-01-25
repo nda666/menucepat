@@ -41,6 +41,25 @@ class AuthTest extends TestCase
     }
 
     /** @test */
+    function new_user_login_should_get_a_token()
+    {
+        $user = $this->user;
+
+        $response = $this->post(route('api.login'), [
+            'email' => $user->email,
+            'password' => 'password',
+            'device_id' => 'random_device_id'
+        ]);
+        $response->assertJson([
+            'data' => [
+                'email' => $user->email,
+                'device_id' => 'random_device_id',
+            ],
+            'success' => true,
+        ]);
+    }
+
+    /** @test */
     function login_without_device_id_for_first_time_should_save_user_device_id()
     {
         $user = $this->user;

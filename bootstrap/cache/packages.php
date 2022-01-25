@@ -13,6 +13,17 @@
       0 => 'BenSampo\\Enum\\EnumServiceProvider',
     ),
   ),
+  'berkayk/onesignal-laravel' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Berkayk\\OneSignal\\OneSignalServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'OneSignal' => 'Berkayk\\OneSignal\\OneSignalFacade',
+    ),
+  ),
   'facade/ignition' => 
   array (
     'providers' => 
@@ -47,6 +58,13 @@
     'providers' => 
     array (
       0 => 'JeroenNoten\\LaravelAdminLte\\AdminLteServiceProvider',
+    ),
+  ),
+  'laravel-notification-channels/onesignal' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'NotificationChannels\\OneSignal\\OneSignalServiceProvider',
     ),
   ),
   'laravel/sail' => 

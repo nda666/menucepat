@@ -51,6 +51,18 @@ class UserRepository extends BaseRepository
             ->toArray();
     }
 
+    public function createToken(User $user)
+    {
+        $exist = true;
+        $token = '';
+        while ($exist) {
+            $token = hash('sha256', Uuid::uuid4());
+            $exist = User::where('token', $token)->first();
+        }
+        $user->token = $token;
+        $user->save();
+    }
+
     /**
      * @param FromRequest $request
      * 

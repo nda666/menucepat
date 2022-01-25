@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use Hash;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use JsonException;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class AuthController extends Controller
@@ -101,6 +102,10 @@ class AuthController extends Controller
 
         $user->notif_id = $userLoginRequest->post('notif_id');
         $user->save();
+
+        if (empty($user->token)) {
+            $this->userRepository->createToken($user);
+        }
 
         $this->clearLoginAttempts($userLoginRequest);
         return new UserResource($this->userRepository->find($user->id));

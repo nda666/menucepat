@@ -27,6 +27,8 @@ class AttendanceRepository extends BaseRepository
 {
     protected $scheduleRepository;
 
+    protected $isExcelWithImage = true;
+
     public function __construct(Attendance $model, ScheduleRepository $scheduleRepository)
     {
         parent::__construct($model);
@@ -82,7 +84,7 @@ class AttendanceRepository extends BaseRepository
         $attendance->user_id = auth()->user()->id;
         $attendance->latitude = $request->post('latitude');
         $attendance->longtitude = $request->post('longtitude');
-        $attendance->location_id = $request->post('type') != AttendanceType::LIVE ? null : $request->post('location_id');
+        $attendance->location_id = $request->post('type') == AttendanceType::LIVE ? $request->post('location_id')  : null;
         $attendance->location_name = $request->post('location_name');
         $attendance->description = $request->post('description');
         $attendance->reason = $request->post('reason');
@@ -97,18 +99,30 @@ class AttendanceRepository extends BaseRepository
         $attendance->save();
         $attendance->refresh();
 
-        $isLate = 0;
-        if ($clockType == ClockType::IN && $request->post('type') == AttendanceType::LIVE) {
-            $isLate = $now->gt($schedule->duty_on) ? 1 : 0;
-        }
+        $message = __('attendance.success');
+        if ($schedule) {
+            if (
+                $clockType == ClockType::IN &&
+                $request->post('type') == AttendanceType::LIVE &&
+                $now->gt($schedule->duty_on->addMinutes(1))
+            ) {
+                // $isLate = $now->gt($schedule->duty_on->addMinutes(1)) ? 1 : 0;
+                $message = __('attendance.late');
+            }
 
-        if ($clockType == ClockType::OUT && $request->post('type') == AttendanceType::LIVE) {
-            $isLate = $now->gt($schedule->duty_on) ? 2 : 0;
+            if (
+                $clockType == ClockType::OUT &&
+                $request->post('type') == AttendanceType::LIVE &&
+                $now->lt($schedule->duty_off)
+            ) {
+                // $isLate = $now->lt($schedule->duty_on) ? 2 : 0;
+                $message = __('attendance.early');
+            }
         }
 
         return [
             'attendance' => $attendance,
-            'message' => $isLate ? 'Absensi berhasil, anda terlambat' : 'Absensi berhasil, anda tidak terlambat'
+            'message' => $message
         ];
     }
 
@@ -214,7 +228,9 @@ class AttendanceRepository extends BaseRepository
             if (SexType::getKey($attendance->sex) == 'FEMALE') {
                 $defaultImage = 'public/images/avatar-f.png';
             }
+
             $this->createExcelImageCell($sheet, $attendance->user_image ? $attendance->user_image : $defaultImage, 'A' . $row);
+
             $sheet->getRowDimension($row)->setRowHeight(50);
             $sheet->setCellValue('B' . $row, $attendance->nik);
             $sheet->setCellValue('C' . $row, $attendance->user_nama);
@@ -225,7 +241,9 @@ class AttendanceRepository extends BaseRepository
             $sheet->setCellValue('H' . $row, $attendance->clock_type->key);
             $sheet->setCellValue('I' . $row, $attendance->type->key);
             $sheet->setCellValue('J' . $row, $attendance->description);
+
             $this->createExcelImageCell($sheet, $attendance->getRawOriginal('image'), 'K' . $row);
+
             $sheet->setCellValue('L' . $row, $attendance->location_name);
             $sheet->setCellValue('M' . $row, $attendance->latitude . ',' . $attendance->longtitude);
             $row++;
@@ -263,7 +281,7 @@ class AttendanceRepository extends BaseRepository
         $image,
         String $coordinate
     ) {
-        if (Storage::exists($image)) {
+        if (Storage::exists($image) && $this->isExcelWithImage) {
             Storage::makeDirectory('temp');
             $fileName = storage_path('app/temp/' . pathinfo(Storage::path($image), PATHINFO_FILENAME) . 'jpg');
             $img = Image::cache(function ($oImage) use ($image, $fileName) {
@@ -347,6 +365,7 @@ class AttendanceRepository extends BaseRepository
             $toArray['duty_on'] = Carbon::parse($attendance->duty_on)->format('d/m/Y H:i');
             $toArray['duty_off'] =  Carbon::parse($attendance->duty_off)->format('d/m/Y H:i');
             $toArray['check_clock'] =  Carbon::parse($attendance->check_clock)->format('d/m/Y H:i');
+            $toArray['image'] = $attendance->getRawOriginal('image');
             $data[$attendance->user_id][$attendance->duty_on][] = $toArray;
         }
         foreach ($data as $userId => $groupedAttendance) {
@@ -399,10 +418,11 @@ class AttendanceRepository extends BaseRepository
                     }
                     #END Description / Keterangan
 
+
                     #Start Image Capture
-                    $perDateAttendace[$i]['clock_type'] == ClockType::IN && $this->createExcelImageCell($sheet, $perDateAttendace[$i]['user_image'], 'L' . $row);
+                    $perDateAttendace[$i]['clock_type'] == ClockType::IN && $this->createExcelImageCell($sheet, $perDateAttendace[$i]['image'], 'L' . $row);
                     if (isset($perDateAttendace[$i + 1])) {
-                        $perDateAttendace[$i + 1]['clock_type'] == ClockType::OUT &&   $this->createExcelImageCell($sheet, $perDateAttendace[$i + 1]['user_image'], 'M' . $row);
+                        $perDateAttendace[$i + 1]['clock_type'] == ClockType::OUT &&   $this->createExcelImageCell($sheet, $perDateAttendace[$i + 1]['image'], 'M' . $row);
                     }
                     #END Image Capture
 
