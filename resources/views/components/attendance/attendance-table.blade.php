@@ -57,17 +57,28 @@
         fixedColumns: {
           left: 1,
         },
-        dom: "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6 d-flex justify-content-end toolbar-datatable'>>" +
+        dom: "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6 d-flex align-items-center justify-content-end toolbar-datatable'>>" +
           "<'row'<'col-sm-12'tr>>" +
           "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
         scrollX: true,
         order: [1, 'desc'],
         drawCallback: function(settings) {
-          $('.toolbar-datatable').html(
-            '<button type="button" class="export-excel btn btn-primary btn-sm" >' +
-            '<i class="fa fa-file-excel"></i> Export Excel' +
-            '</button>'
-          );
+          $('.toolbar-datatable').html(`
+          <a class="popover-dismiss mr-2" data-placement="top" data-toggle="popover" data-trigger="focus" title="Info" data-content="Lebar <b>photo pegawai</b> dan <b>capture absensi</b> di-resize sebesar 50px agar ukuran file excel dengan photo tidak menjadi lebih besar. "><i class="fa fa-info-circle fa-sm"></i></a>
+
+          <div class="btn-group" role="group" aria-label="Basic example">
+            
+            <button type="button" class="export-excel btn btn-primary btn-sm" >
+            <i class="fa fa-file-excel"></i> Export Excel
+            </button>
+            <button type="button" class="export-excel-without-photo btn btn-primary btn-sm" >
+            <i class="fa fa-file-excel"></i> Export Excel - Tanpa Photo
+            </button></div>
+          `);
+          $('.popover-dismiss').popover({
+            trigger: 'hover',
+            html: true
+          })
         },
         ajax: {
           url: '{{ route('attendance.table') }}',
@@ -93,19 +104,19 @@
                 dataAttribut += `data-${key}="${row[key]}" `;
               }
               return `<div class="dropdown show" >
-                                    <a class="btn btn-secondary dropdown-toggle"  href="#" role="button" id="dropdownMenuLink${val}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        Aksi
-                                    </a>
+                      <a class="btn btn-secondary dropdown-toggle"  href="#" role="button" id="dropdownMenuLink${val}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          Aksi
+                      </a>
 
-                                    <div  class="dropdown-menu" data-target="#dropdownMenuLink${val}" id="dropdown-menu-${val}" style="position: fixed" aria-labelledby="dropdownMenuLink${val}">
-                                        <h6 class="dropdown-header">${row.id} | ${row.user_nama}</h6>
-                                        <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item view-action" href="#lihat">Lihat</a>
-                                        <a class="dropdown-item edit-action" href="#edit">Ubah</a>
-                                        <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item delete-action" href="#lihat">Hapus</a>
-                                    </div>
-                                    </div>`
+                      <div  class="dropdown-menu" data-target="#dropdownMenuLink${val}" id="dropdown-menu-${val}" style="position: fixed" aria-labelledby="dropdownMenuLink${val}">
+                          <h6 class="dropdown-header">${row.id} | ${row.user_nama}</h6>
+                          <div class="dropdown-divider"></div>
+                          <a class="dropdown-item view-action" href="#lihat">Lihat</a>
+                          <a class="dropdown-item edit-action" href="#edit">Ubah</a>
+                          <div class="dropdown-divider"></div>
+                          <a class="dropdown-item delete-action" href="#lihat">Hapus</a>
+                      </div>
+                      </div>`
             }
           },
           {
@@ -132,7 +143,6 @@
             name: 'image',
             data: 'image',
             render: function(img, x, row) {
-              console.log(row)
               return `<a href="${row.user_image}" data-second="${row.image}" data-toggle="lightbox" data-gallery="example-gallery" class="col-sm-4"><img src="${img}" width="50px" height="50px" class="rounded-sm"></a>`
             }
           },
@@ -194,7 +204,7 @@
         div.html(
           `<div class="text-center" style="width: 50%;"><img class="img-fluid" style="max-height: 80vh" src="${_this.attr('href')}" /></div><div class="text-center" style="width: 50%;"><img class="img-fluid" style="max-height: 80vh" src="${_this.attr('data-second')}"/></div>`
         )
-        console.log(div[0])
+
         var dialog = bootbox.dialog({
           message: div[0],
           closeButton: false,
@@ -204,16 +214,40 @@
       });
 
 
+      function makeLoading(isLoading = true) {
+        if (isLoading) {
 
-      $('body').on('click', '.export-excel', function(e) {
+          $('.export-excel-without-photo, .export-excel').prop('disabled', true);
+          $('.export-excel-without-photo').html(
+            `<div class="spinner-grow spinner-grow-sm text-light" role="status"><span class="sr-only">Loading...</span></div> Export Excel - Tanpa Photo`
+          );
+          $('.export-excel').html(
+            `<div class="spinner-grow spinner-grow-sm text-light" role="status"><span class="sr-only">Loading...</span></div> Export Excel`
+          );
+        } else {
+          $('.export-excel-without-photo').html(`<i class="fa fa-file-excel"></i> Export Excel - Tanpa Photo`);
+          $('.export-excel').html(`<i class="fa fa-file-excel"></i> Export Excel`);
+          $('.export-excel-without-photo, .export-excel').prop('disabled', false);
+        }
+      }
+
+      function exportExcel($withoutImage = false) {
+        makeLoading();
         var req = new XMLHttpRequest();
-        var query = $.param(window['{{ $id }}'].ajax.params());
+        var query = $.param({
+          ...window['{{ $id }}'].ajax.params(),
+          without_image: $withoutImage ? 1 : 0,
+        });
         req.open("GET", "{{ route('attendance.excel') }}?" + query, true);
         req.responseType = "blob";
+        req.onreadystatechange = function() {
+          if (req.readyState == 4) {
 
+            makeLoading(false);
+          }
+        };
         req.onload = function(event) {
           var blob = req.response;
-          console.log(blob.size);
 
           var link = document.createElement('a');
           link.href = window.URL.createObjectURL(blob);
@@ -224,6 +258,15 @@
           link.click();
         };
         req.send()
+      }
+
+      $('body').on('click', '.export-excel-without-photo', function(event) {
+        event.preventDefault();
+        exportExcel(true);
+      });
+
+      $('body').on('click', '.export-excel', function(e) {
+        exportExcel();
       });
 
 

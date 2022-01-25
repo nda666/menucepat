@@ -214,6 +214,7 @@ class AttendanceRepository extends BaseRepository
 
     public function makeExcel(Request $request)
     {
+        $this->isExcelWithImage = !$request->get('without_image');
         $oAttendance = $this->baseAttendance($request);
         $attendances = $this->filterPaginated($oAttendance, $request)
             ->orderBy('users.nama', 'asc')
