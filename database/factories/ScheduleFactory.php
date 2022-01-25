@@ -22,7 +22,7 @@ class ScheduleFactory extends Factory
     public function definition()
     {
         if (!$this->duty_on) {
-            $this->duty_on = Carbon::create(2022, 1, 1, 8, 0, 0);
+            $this->duty_on = Carbon::now();
         }
         $exist = true;
         $user = null;
@@ -37,7 +37,7 @@ class ScheduleFactory extends Factory
             if (self::$countCreated >= 30) {
                 self::$countCreated = 0;
                 self::$indexUser++;
-                $this->duty_on = Carbon::create(2022, 1, 1, 8, 0, 0);
+                $this->duty_on = Carbon::now();
             }
             $userId = $user[self::$indexUser]['id'];
 

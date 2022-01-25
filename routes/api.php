@@ -46,6 +46,9 @@ Route::middleware(['auth:api'])->group(function () {
 
     Route::post('/clock-in', [AttendanceController::class, 'clockIn'])->name('api.clockIn');
     Route::post('/clock-out', [AttendanceController::class, 'clockOut'])->name('api.clockOut');
+
+    Route::get('/attendances', [AttendanceController::class, 'index'])->name('api.attendances');
+
     Route::get('/current-attendance', [AttendanceController::class, 'currentAttendance'])->name('api.currentAttendance');
     Route::get('/attendance/image', [AttendanceController::class, 'attendanceImage'])->name('api.attendanceImage');
 

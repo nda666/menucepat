@@ -2,18 +2,83 @@
 
 namespace Tests\Feature\Api;
 
+use App\Enums\AttendanceType;
+use App\Http\Resources\Api\AttendanceResource;
 use App\Models\Attendance;
 use App\Models\Location;
 use App\Models\Schedule;
 use App\Models\User;
+use App\Repositories\AttendanceRepository;
+use App\Repositories\ScheduleRepository;
 use Carbon\Carbon;
+use DB;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Request;
 use Log;
+use SebastianBergmann\Environment\Console;
+use Symfony\Component\Console\Output\ConsoleOutput;
 use Tests\TestCase;
 
 class AttendanceTest extends TestCase
 {
     use RefreshDatabase;
+
+    /** @var \App\Models\User */
+    private $user;
+
+    function setUp(): void
+    {
+        parent::setUp();
+        $this->user = User::factory(1)->create()->first();
+        $this->user->email = 'adhabakhtiar@gmail.com';
+        $this->user->save();
+    }
+
+    /** @test */
+    function find_all_attendances_should_same_with_resource()
+    {
+        Location::factory(1)->create();
+        Schedule::factory(1)->create();
+        Attendance::factory(1)->create();
+        $response = $this->actingAs($this->user, 'api')->get(route('api.attendances'));
+
+        $req = new Request();
+        $scheduleRepository = new ScheduleRepository(new Schedule());
+        $attendanceRepository = new AttendanceRepository(new Attendance(), $scheduleRepository);
+        $result = AttendanceResource::collection($attendanceRepository->findAll($req));
+        $response->assertJson(['data' => $result->toArray($req)]);
+    }
+
+    /** @test */
+    function find_all_attendances_with_filters_should_same_with_resource()
+    {
+        Location::factory(2)->create();
+        Schedule::factory(2)->create();
+        Attendance::factory(2 * 6)->create();
+        $filterRequest =   [
+            'start_date' => Carbon::now()->format('Y-m-d'),
+            'attendanceType' => (string) AttendanceType::LIVE
+        ];
+        $response = $this->actingAs($this->user, 'api')->get(
+            route(
+                'api.attendances',
+                $filterRequest
+            )
+        );
+
+        $req = new Request($filterRequest);
+
+        $scheduleRepository = new ScheduleRepository(new Schedule());
+        $attendanceRepository = new AttendanceRepository(new Attendance(), $scheduleRepository);
+
+        $attendances = $attendanceRepository->findAll($req);
+        $attendanceCollection = AttendanceResource::collection($attendances)->toArray($req);
+        $json = $response->json();
+
+        $this->assertArrayHasKey('data', $json);
+        $this->assertCount(count($attendanceCollection), $json['data']);
+        $response->assertJson(['data' => $attendanceCollection]);
+    }
 
     /** @test */
     function check_in()

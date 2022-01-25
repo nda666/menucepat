@@ -14,28 +14,37 @@ use Storage;
 
 class AttendanceController extends Controller
 {
-    private $attendaceRepo;
+    /**
+     * @var \App\Repositories\AttendanceRepository
+     */
+    private $attendanceRepo;
 
-    public function __construct(AttendanceRepository $attendaceRepo)
+    public function __construct(AttendanceRepository $attendanceRepo)
     {
-        $this->attendaceRepo = $attendaceRepo;
+        $this->attendanceRepo = $attendanceRepo;
+    }
+
+    public function index(Request $request)
+    {
+        $attendances = $this->attendanceRepo->findAll($request);
+        return AttendanceResource::collection($attendances);
     }
 
     public function currentAttendance()
     {
-        $attendance = $this->attendaceRepo->currentAttendance(auth()->user()->id);
+        $attendance = $this->attendanceRepo->currentAttendance(auth()->user()->id);
         return new BaseResource($attendance);
     }
 
     public function clockIn(ClockInRequest $clockInRequest)
     {
-        $attendance = $this->attendaceRepo->clockIn($clockInRequest);
+        $attendance = $this->attendanceRepo->clockIn($clockInRequest);
         return $this->checkClockResponse($attendance);
     }
 
     public function clockOut(ClockOutRequest $clockOutRequest)
     {
-        $attendance = $this->attendaceRepo->clockOut($clockOutRequest);
+        $attendance = $this->attendanceRepo->clockOut($clockOutRequest);
         return $this->checkClockResponse($attendance);
     }
 

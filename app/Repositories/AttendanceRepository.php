@@ -9,6 +9,8 @@ use App\Models\Attendance;
 use App\Models\Location;
 use App\Models\Schedule;
 use App\Models\User;
+use Cache\Adapter\Redis\RedisCachePool;
+use Cache\Bridge\SimpleCache\SimpleCacheBridge;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -189,6 +191,39 @@ class AttendanceRepository extends BaseRepository
         return $attendances;
     }
 
+    public function findAllTest(array $array)
+    {
+
+        $userTable = with(new User)->getTable();
+        $attendancesTable = with(new Attendance)->getTable();
+        $locationTable = with(new Location)->getTable();
+        $scheduleTable = with(new Schedule)->getTable();
+        $attendances = Attendance::select('attendances.*', $userTable . '.nama as user_nama', $userTable . '.nik as nik', $userTable . '.avatar as user_image', $userTable . '.sex', "{$scheduleTable}.duty_on", "{$scheduleTable}.duty_off", "{$scheduleTable}.code as schedule_code")
+            ->leftJoin($scheduleTable, $scheduleTable . '.id', '=', $attendancesTable . '.schedule_id')
+            ->join($userTable, $userTable . '.id', '=', $attendancesTable . '.user_id');
+
+        (isset($array['nameOrNIK']) && $array['nameOrNIK']) && $attendances->where(function ($multiWhere) use ($array) {
+            $multiWhere->where('users.nama', 'like', "%{$array['nameOrNIK']}%");
+            $multiWhere->orWhere('users.nik', $array['nameOrNIK']);
+        });
+
+        (isset($array['attendanceType']) && $array['attendanceType'] != '') && $attendances->where('attendances.type', $array['attendanceType']);
+
+        (isset($array['start_date'])) && $attendances->where('attendances.check_clock', '>=', $array['start_date']);
+
+        (isset($array['end_date']))  && $attendances->where('attendances.check_clock', '<=', $array['end_date']);
+
+        return $attendances->get();
+    }
+
+    public function findAll(Request $request)
+    {
+        $attendances = $this->baseAttendance($request);
+        $this->filterPaginated($attendances, $request);
+
+        return $attendances->get();
+    }
+
     public function paginate(Request $request)
     {
 
@@ -214,13 +249,17 @@ class AttendanceRepository extends BaseRepository
 
     public function makeExcel(Request $request)
     {
+
         $this->isExcelWithImage = !$request->get('without_image');
+
         $oAttendance = $this->baseAttendance($request);
         $attendances = $this->filterPaginated($oAttendance, $request)
             ->orderBy('users.nama', 'asc')
             ->orderBy('schedules.duty_on', 'asc')
             ->orderBy('attendances.check_clock', 'asc')
             ->get();
+
+
         $spreadsheet = new Spreadsheet();
         $worksheet = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($spreadsheet, 'Attendance Report - Details');
         $spreadsheet->addSheet($worksheet, 0);
